@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { FavoritesService } from '../services/favorites.service';
 import { WeatherService } from '../services/weather.service';
 import { SettingsService, TempUnit } from '../services/settings.service';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 @Component({
   selector: 'app-tab1',
@@ -60,8 +61,6 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   async loadCities() {
-    // podle toho co máš ve FavoritesService (listCities/getCities)
-    // Ty používáš getCities() a getActiveCity() – nechávám to tak.
     this.cities = await this.fav.getCities();
     const stored = await this.fav.getActiveCity();
 
@@ -70,7 +69,6 @@ export class Tab1Page implements OnInit, OnDestroy {
     if (this.activeCity) {
       await this.loadWeather();
     } else {
-      // když nemáš žádná města, vyčisti UI
       this.weather = null;
       this.errorMessage = '';
     }
@@ -100,4 +98,25 @@ export class Tab1Page implements OnInit, OnDestroy {
       },
     });
   }
+
+  bump = false;
+
+  async refreshWithHaptics() {
+    try { await Haptics.impact({ style: ImpactStyle.Light }); } catch {}
+    this.bump = true;
+    setTimeout(() => (this.bump = false), 250);
+    await this.loadWeather();
+  }
+
+  async metricTap(label: string) {
+    try { await Haptics.impact({ style: ImpactStyle.Medium }); } catch {}
+    console.log('metric tap:', label);
+  }
+
+  async handlePullToRefresh(ev: CustomEvent) {
+    await this.loadWeather();
+    // @ts-ignore
+    ev.target?.complete?.();
+  }
+
 }

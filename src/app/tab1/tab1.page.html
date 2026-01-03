@@ -1,13 +1,12 @@
-<ion-header>
+<ion-header translucent="true" class="header-glass">
   <ion-toolbar>
-    <ion-title>test</ion-title>
-
     <ion-buttons slot="start">
       <ion-select
         interface="popover"
-        placeholder="Město"
+        placeholder="Vyber město"
         [value]="activeCity"
         (ionChange)="onCityChange($event.detail.value)"
+        class="city-select"
       >
         <ion-select-option *ngFor="let c of cities" [value]="c">
           {{ c }}
@@ -15,44 +14,173 @@
       </ion-select>
     </ion-buttons>
 
+    <ion-title>Počasí</ion-title>
+
     <ion-buttons slot="end">
-      <ion-button (click)="loadWeather()">
-        <ion-icon name="refresh-outline"></ion-icon>
+      <ion-button fill="clear" (click)="refreshWithHaptics()" [disabled]="loading || !activeCity">
+        <ion-icon name="refresh-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-spinner *ngIf="loading"></ion-spinner>
-  <ion-text color="danger" *ngIf="errorMessage">{{ errorMessage }}</ion-text>
+<ion-content [fullscreen]="true" class="bg">
+  <ion-refresher slot="fixed" (ionRefresh)="handlePullToRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
-  <ion-card *ngIf="weather">
-    <ion-card-header>
-      <ion-card-title>{{ weather.location?.name }}</ion-card-title>
-      <ion-card-subtitle>{{ weather.current?.condition?.text }}</ion-card-subtitle>
-    </ion-card-header>
+  <div class="page">
+    <!-- Empty state -->
+    <div class="empty" *ngIf="!loading && !weather && !errorMessage">
+      <ion-icon name="location-outline"></ion-icon>
+      <div class="empty-title">Nemáš vybrané město</div>
+      <div class="empty-sub">Přidej město v Tab2 a pak ho vyber tady nahoře.</div>
+    </div>
 
-    <ion-card-content>
-      <div class="temp">{{ displayTempCtoUnit(weather.current?.temp_c) }}°{{ unit === 'c' ? 'C' : 'F' }}</div>
-      
+    <!-- Skeleton loading -->
+    <div *ngIf="loading" class="skeleton">
+      <div class="hero hero-glass">
+        <div class="hero-top">
+          <ion-skeleton-text animated style="width: 45%; height: 16px"></ion-skeleton-text>
+          <ion-skeleton-text animated style="width: 30%; height: 16px"></ion-skeleton-text>
+        </div>
 
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            <div class="metric-label">Vlhkost</div>
-            <div class="metric">{{ weather.current?.humidity }}%</div>
-          </ion-col>
-          <ion-col>
-            <div class="metric-label">Vítr</div>
-            <div class="metric">{{ weather.current?.wind_kph }} km/h</div>
-          </ion-col>
-          <ion-col>
-            <div class="metric-label">Pocitově</div>
-            <div class="metric">{{ displayTempCtoUnit(weather.current?.feelslike_c) }}°{{ unit === 'c' ? 'C' : 'F' }}</div>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card-content>
-  </ion-card>
+        <div class="hero-mid">
+          <ion-skeleton-text animated style="width: 55%; height: 64px"></ion-skeleton-text>
+          <ion-skeleton-text animated style="width: 35%; height: 14px"></ion-skeleton-text>
+        </div>
+
+        <div class="hero-chips">
+          <ion-skeleton-text animated style="width: 120px; height: 26px; border-radius: 999px"></ion-skeleton-text>
+          <ion-skeleton-text animated style="width: 140px; height: 26px; border-radius: 999px"></ion-skeleton-text>
+          <ion-skeleton-text animated style="width: 110px; height: 26px; border-radius: 999px"></ion-skeleton-text>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card" *ngFor="let _ of [1,2,3,4,5,6,7,8]">
+          <ion-skeleton-text animated style="width: 60%; height: 12px"></ion-skeleton-text>
+          <ion-skeleton-text animated style="width: 40%; height: 20px; margin-top: 8px"></ion-skeleton-text>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <ion-card class="error-card" *ngIf="!loading && errorMessage">
+      <ion-card-content>
+        <div class="error-row">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <div class="error-text">{{ errorMessage }}</div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- HERO -->
+    <div
+      class="hero hero-glass enter"
+      *ngIf="!loading && weather"
+      [class.bump]="bump"
+    >
+      <div class="hero-top">
+        <div class="place">
+          <div class="city">{{ weather.location?.name }}</div>
+          <div class="meta">
+            {{ weather.location?.region }} • {{ weather.location?.country }}
+          </div>
+        </div>
+
+        <ion-chip class="cond-chip" outline="true">
+          <ion-icon name="cloud-outline"></ion-icon>
+          <ion-label>{{ weather.current?.condition?.text }}</ion-label>
+        </ion-chip>
+      </div>
+
+      <div class="hero-mid">
+        <div class="temp">
+          {{ displayTempCtoUnit(weather.current?.temp_c) }}
+          <span class="unit">°{{ unit === 'c' ? 'C' : 'F' }}</span>
+        </div>
+
+        <div class="subline">
+          Pocitově:
+          <b>{{ displayTempCtoUnit(weather.current?.feelslike_c) }}°</b>
+          • Vítr:
+          <b>{{ weather.current?.wind_kph }} km/h</b>
+        </div>
+      </div>
+
+      <div class="hero-chips">
+        <ion-chip class="info-chip">
+          <ion-icon name="sunny-outline"></ion-icon>
+          <ion-label>UV {{ weather.current?.uv }}</ion-label>
+        </ion-chip>
+
+        <ion-chip class="info-chip">
+          <ion-icon name="water-outline"></ion-icon>
+          <ion-label>Vlhkost {{ weather.current?.humidity }}%</ion-label>
+        </ion-chip>
+
+        <ion-chip class="info-chip">
+          <ion-icon name="speedometer-outline"></ion-icon>
+          <ion-label>{{ weather.current?.pressure_mb }} hPa</ion-label>
+        </ion-chip>
+      </div>
+    </div>
+
+    <!-- METRICS -->
+    <div class="metrics-grid" *ngIf="!loading && weather">
+      <button class="metric-card tap" type="button" (click)="metricTap('Clouds')">
+        <div class="m-label">Oblačnost</div>
+        <div class="m-value">{{ weather.current?.cloud }} %</div>
+        <div class="m-sub">cloud</div>
+      </button>
+
+      <button class="metric-card tap" type="button" (click)="metricTap('Visibility')">
+        <div class="m-label">Viditelnost</div>
+        <div class="m-value">{{ weather.current?.vis_km }} km</div>
+        <div class="m-sub">vis_km</div>
+      </button>
+
+      <button class="metric-card tap" type="button" (click)="metricTap('Gust')">
+        <div class="m-label">Nárazy větru</div>
+        <div class="m-value">{{ weather.current?.gust_kph }} km/h</div>
+        <div class="m-sub">gust_kph</div>
+      </button>
+
+      <button class="metric-card tap" type="button" (click)="metricTap('Precip')">
+        <div class="m-label">Srážky</div>
+        <div class="m-value">{{ weather.current?.precip_mm }} mm</div>
+        <div class="m-sub">precip_mm</div>
+      </button>
+
+      <button class="metric-card tap" type="button" (click)="metricTap('Dew point')">
+        <div class="m-label">Rosný bod</div>
+        <div class="m-value">{{ displayTempCtoUnit(weather.current?.dewpoint_c) }}°</div>
+        <div class="m-sub">dewpoint</div>
+      </button>
+
+      <button class="metric-card tap" type="button" (click)="metricTap('Wind dir')">
+        <div class="m-label">Směr větru</div>
+        <div class="m-value">{{ weather.current?.wind_dir }}</div>
+        <div class="m-sub">wind_dir</div>
+      </button>
+
+      <button class="metric-card tap" type="button" (click)="metricTap('Pressure')">
+        <div class="m-label">Tlak</div>
+        <div class="m-value">{{ weather.current?.pressure_mb }} hPa</div>
+        <div class="m-sub">pressure</div>
+      </button>
+
+      <button class="metric-card tap" type="button" (click)="metricTap('Last update')">
+        <div class="m-label">Aktualizace</div>
+        <div class="m-value">{{ weather.current?.last_updated }}</div>
+        <div class="m-sub">last_updated</div>
+      </button>
+    </div>
+
+    <div class="footer-hint" *ngIf="!loading && weather">
+      <ion-icon name="sparkles-outline"></ion-icon>
+      <span>Pull-to-refresh nebo klikni na refresh vpravo nahoře.</span>
+    </div>
+  </div>
 </ion-content>
