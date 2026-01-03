@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { WeatherService } from '../../services/weather.service';
+import { FavoritesService } from '../../services/favorites.service';
 
 @Component({
   selector: 'app-search',
@@ -18,7 +19,10 @@ export class SearchPage {
   loading = false;
   errorMessage = '';
 
-  constructor(private weatherService: WeatherService) {}
+  constructor(
+    private weatherService: WeatherService,
+    private favoritesService: FavoritesService
+  ) {}
 
   searchWeather() {
     if (!this.city?.trim()) return;
@@ -37,5 +41,16 @@ export class SearchPage {
         this.loading = false;
       },
     });
+  }
+
+  async addToFavorites() {
+    if (!this.weather) return;
+
+    await this.favoritesService.add({
+      name: this.weather.location.name,
+      country: this.weather.location.country,
+    });
+
+    alert('Město uloženo do oblíbených');
   }
 }

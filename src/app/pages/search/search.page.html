@@ -19,6 +19,10 @@
     <ion-button expand="block" class="ion-margin-top" (click)="searchWeather()">
       Hledat
     </ion-button>
+    <ion-button *ngIf="weather" expand="block" fill="outline" class="ion-margin-top" (click)="addToFavorites()">
+      Uložit do oblíbených
+    </ion-button>
+
   </div>
 
   <div class="results ion-padding">
@@ -32,3 +36,4 @@
     </ion-card>
   </div>
 </ion-content>
+
