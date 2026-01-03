@@ -15,15 +15,27 @@ import { WeatherService } from '../../services/weather.service';
 export class SearchPage {
   city = '';
   weather: any;
+  loading = false;
+  errorMessage = '';
 
   constructor(private weatherService: WeatherService) {}
 
   searchWeather() {
-    if (!this.city) return;
+    if (!this.city?.trim()) return;
 
-    this.weatherService.getCurrentWeather(this.city).subscribe({
-      next: (data) => (this.weather = data),
-      error: () => alert('Město nenalezeno'),
+    this.loading = true;
+    this.errorMessage = '';
+    this.weather = null;
+
+    this.weatherService.getCurrentWeather(this.city.trim()).subscribe({
+      next: (data) => {
+        this.weather = data;
+        this.loading = false;
+      },
+      error: () => {
+        this.errorMessage = 'Město nenalezeno nebo chyba API.';
+        this.loading = false;
+      },
     });
   }
 }
