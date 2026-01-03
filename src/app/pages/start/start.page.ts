@@ -14,26 +14,22 @@ import { AppModeService } from '../../services/app-mode.service';
 export class StartPage implements OnInit {
   constructor(private appMode: AppModeService, private router: Router) {}
 
-  ngOnInit() {
-    // fallback kdyby Preferences spadly nebo něco viselo
-    const fallback = setTimeout(() => {
-      this.router.navigateByUrl('/auth-gate', { replaceUrl: true });
-    }, 1200);
+  async ngOnInit() {
+    const url = this.router.url;
 
-    this.appMode
-      .getMode()
-      .then((mode) => {
-        clearTimeout(fallback);
+    // povol veřejné stránky bez přesměrování
+    if (url.startsWith('/login') || url.startsWith('/register') || url.startsWith('/auth-gate')) {
+      return;
+    }
 
-        if (mode === 'guest' || mode === 'user') {
-          this.router.navigateByUrl('/tabs', { replaceUrl: true });
-        } else {
-          this.router.navigateByUrl('/auth-gate', { replaceUrl: true });
-        }
-      })
-      .catch(() => {
-        clearTimeout(fallback);
-        this.router.navigateByUrl('/auth-gate', { replaceUrl: true });
-      });
-  }
+    const mode = await this.appMode.getMode();
+
+    if (mode === 'guest' || mode === 'user') {
+      await this.router.navigateByUrl('/tabs/tab1', { replaceUrl: true });
+      return;
+    }
+
+    await this.router.navigateByUrl('/auth-gate', { replaceUrl: true });
+ }
+
 }
