@@ -1,22 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, SegmentChangeEventDetail } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { StorageService } from '../services/storage.service';
 import { FavoritesService } from '../services/favorites.service';
 import { AuthService } from '../services/auth.service';
-
-type TempUnit = 'c' | 'f';
-
-interface AppSettings {
-  tempUnit: TempUnit;
-  autoRefresh: boolean;
-  useSystemTheme: boolean;
-}
-
-const SETTINGS_KEY = 'app_settings';
+import { SettingsService, AppSettings, TempUnit } from '../services/settings.service';
 
 @Component({
   selector: 'app-tab3',
@@ -32,29 +22,31 @@ export class Tab3Page implements OnInit, OnDestroy {
   isLoggedIn = false;
   userEmail = '';
 
-  // settings (initialized => žádné ?. v html, žádné NG8107 řeči)
+  // settings (bez ? v html)
   settings: AppSettings = {
     tempUnit: 'c',
     autoRefresh: true,
     useSystemTheme: true,
   };
 
-  private sub?: Subscription;
+  private subAuth?: Subscription;
+  private subSettings?: Subscription;
 
   constructor(
     private router: Router,
-    private storage: StorageService,
     private favorites: FavoritesService,
-    private auth: AuthService
+    private auth: AuthService,
+    private settingsSvc: SettingsService
   ) {}
 
   async ngOnInit() {
-    // 1) load settings
-    await this.loadSettings();
+    // Settings state (globální + persistentní)
+    this.subSettings = this.settingsSvc.state$.subscribe((s) => {
+      this.settings = s;
+    });
 
-    // 2) auth state
-    // AuthService by měl mít user$ (Observable<User|null>) – pokud máš jinak, napiš a upravím.
-    this.sub = this.auth.user$?.subscribe((u: any) => {
+    // Auth state
+    this.subAuth = this.auth.user$?.subscribe((u: any) => {
       this.isLoggedIn = !!u;
       this.userEmail = u?.email ?? '';
     });
@@ -63,7 +55,8 @@ export class Tab3Page implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.sub?.unsubscribe();
+    this.subAuth?.unsubscribe();
+    this.subSettings?.unsubscribe();
   }
 
   // ---------- navigation ----------
@@ -76,34 +69,22 @@ export class Tab3Page implements OnInit, OnDestroy {
   }
 
   // ---------- settings ----------
-  onTempUnitChange(ev: CustomEvent<SegmentChangeEventDetail>) {
-    const v = ev.detail.value;
-    if (v === 'c' || v === 'f') {
-      this.setTempUnit(v);
-    }
-  }
-
   async setTempUnit(unit: TempUnit) {
-    this.settings.tempUnit = unit;
-    await this.saveSettings();
+    await this.settingsSvc.setTempUnit(unit);
   }
 
   async toggleAutoRefresh(checked: boolean) {
-    this.settings.autoRefresh = !!checked;
-    await this.saveSettings();
+    await this.settingsSvc.setAutoRefresh(!!checked);
   }
 
   async toggleUseSystemTheme(checked: boolean) {
-    this.settings.useSystemTheme = !!checked;
-    await this.saveSettings();
+    await this.settingsSvc.setUseSystemTheme(!!checked);
   }
 
   // ---------- account ----------
   async logout() {
     try {
       await this.auth.logout();
-      // po logoutu klidně zůstaň na settings, nebo přesměruj:
-      // await this.router.navigateByUrl('/auth-gate');
     } catch (e) {
       console.error(e);
       alert('Odhlášení selhalo.');
@@ -116,55 +97,16 @@ export class Tab3Page implements OnInit, OnDestroy {
     if (!ok) return;
 
     try {
-      // smaž nastavení
-      await this.storage.remove(SETTINGS_KEY);
+      // reset settings (tím se uloží i do local)
+      await this.settingsSvc.reset();
 
-      // smaž oblíbené (pokud FavoritesService používá storage, ideálně má metodu clear)
-      if (typeof (this.favorites as any).clear === 'function') {
-        await (this.favorites as any).clear();
-      } else {
-        // fallback: pokud máš ve FavoritesService klíč, přepiš si to na ten svůj
-        await this.storage.remove('favorite_cities');
-      }
-
-      // reload
-      this.settings = {
-        tempUnit: 'c',
-        autoRefresh: true,
-        useSystemTheme: true,
-      };
-      await this.saveSettings();
+      // smazat lokální favorites (guest data)
+      await this.favorites.clearLocal();
 
       alert('Hotovo. Lokální data resetována.');
     } catch (e) {
       console.error(e);
       alert('Reset selhal.');
     }
-  }
-
-  // ---------- storage helpers ----------
-  private async loadSettings() {
-    try {
-      const raw = await this.storage.get<string | null>(SETTINGS_KEY, null);
-      if (!raw) return;
-
-      const parsed = JSON.parse(raw) as Partial<AppSettings>;
-
-      // validace + fallbacky
-      const tempUnit: TempUnit =
-        parsed.tempUnit === 'f' ? 'f' : 'c';
-
-      this.settings = {
-        tempUnit,
-        autoRefresh: parsed.autoRefresh ?? true,
-        useSystemTheme: parsed.useSystemTheme ?? true,
-      };
-    } catch (e) {
-      console.warn('[Tab3] loadSettings failed, using defaults', e);
-    }
-  }
-
-  private async saveSettings() {
-    await this.storage.set(SETTINGS_KEY, JSON.stringify(this.settings));
   }
 }

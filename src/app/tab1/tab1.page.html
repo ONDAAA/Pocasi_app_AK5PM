@@ -35,6 +35,7 @@
 
     <ion-card-content>
       <div class="temp">{{ displayTempCtoUnit(weather.current?.temp_c) }}°{{ unit === 'c' ? 'C' : 'F' }}</div>
+      
 
       <ion-grid>
         <ion-row>
@@ -48,7 +49,7 @@
           </ion-col>
           <ion-col>
             <div class="metric-label">Pocitově</div>
-            <div class="metric">{{ weather.current?.feelslike_c }}°C</div>
+            <div class="metric">{{ displayTempCtoUnit(weather.current?.feelslike_c) }}°{{ unit === 'c' ? 'C' : 'F' }}</div>
           </ion-col>
         </ion-row>
       </ion-grid>

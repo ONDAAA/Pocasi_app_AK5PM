@@ -47,15 +47,11 @@
       <ion-item>
         <ion-label>Jednotky teploty</ion-label>
 
-        <ion-segment
-          [value]="settings.tempUnit"
-          (ionChange)="onTempUnitChange($event)"
-        >
-          <ion-segment-button value="c">
+        <ion-segment [value]="settings.tempUnit">
+          <ion-segment-button value="c" (click)="setTempUnit('c')">
             <ion-label>°C</ion-label>
           </ion-segment-button>
-
-          <ion-segment-button value="f">
+          <ion-segment-button value="f" (click)="setTempUnit('f')">
             <ion-label>°F</ion-label>
           </ion-segment-button>
         </ion-segment>
