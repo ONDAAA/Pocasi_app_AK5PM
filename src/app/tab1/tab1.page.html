@@ -1,1 +1,57 @@
-<app-search></app-search>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>test</ion-title>
+
+    <ion-buttons slot="start">
+      <ion-select
+        interface="popover"
+        placeholder="Město"
+        [value]="activeCity"
+        (ionChange)="onCityChange($event.detail.value)"
+      >
+        <ion-select-option *ngFor="let c of cities" [value]="c">
+          {{ c }}
+        </ion-select-option>
+      </ion-select>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="loadWeather()">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-spinner *ngIf="loading"></ion-spinner>
+  <ion-text color="danger" *ngIf="errorMessage">{{ errorMessage }}</ion-text>
+
+  <ion-card *ngIf="weather">
+    <ion-card-header>
+      <ion-card-title>{{ weather.location?.name }}</ion-card-title>
+      <ion-card-subtitle>{{ weather.current?.condition?.text }}</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div class="temp">{{ weather.current?.temp_c }}°C</div>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <div class="metric-label">Vlhkost</div>
+            <div class="metric">{{ weather.current?.humidity }}%</div>
+          </ion-col>
+          <ion-col>
+            <div class="metric-label">Vítr</div>
+            <div class="metric">{{ weather.current?.wind_kph }} km/h</div>
+          </ion-col>
+          <ion-col>
+            <div class="metric-label">Pocitově</div>
+            <div class="metric">{{ weather.current?.feelslike_c }}°C</div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -46,10 +46,7 @@ export class SearchPage {
   async addToFavorites() {
     if (!this.weather) return;
 
-    await this.favoritesService.add({
-      name: this.weather.location.name,
-      country: this.weather.location.country,
-    });
+    await this.favoritesService.addCity(this.city.trim());
 
     alert('Město uloženo do oblíbených');
   }

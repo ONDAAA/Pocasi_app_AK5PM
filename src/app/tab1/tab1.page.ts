@@ -1,11 +1,65 @@
-import { Component } from '@angular/core';
-import { SearchPage } from '../pages/search/search.page';
+import { Component, OnInit } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+
+import { FavoritesService } from '../services/favorites.service';
+import { WeatherService } from '../services/weather.service';
 
 @Component({
   selector: 'app-tab1',
   standalone: true,
-  imports: [SearchPage],
-  templateUrl: './tab1.page.html',
-  styleUrls: ['./tab1.page.scss'],
+  imports: [IonicModule, CommonModule],
+  templateUrl: 'tab1.page.html',
+  styleUrls: ['tab1.page.scss'],
 })
-export class Tab1Page {}
+export class Tab1Page implements OnInit {
+  cities: string[] = [];
+  activeCity = '';
+  weather: any = null;
+  loading = false;
+  errorMessage = '';
+
+  constructor(
+    private fav: FavoritesService,
+    private weatherService: WeatherService
+  ) {}
+
+  async ngOnInit() {
+    await this.loadCities();
+  }
+
+  async ionViewWillEnter() {
+    await this.loadCities();
+  }
+
+  async loadCities() {
+    this.cities = await this.fav.getCities();
+    const stored = await this.fav.getActiveCity();
+    this.activeCity = stored || this.cities[0] || '';
+    if (this.activeCity) await this.loadWeather();
+  }
+
+  async onCityChange(city: string) {
+    this.activeCity = city;
+    await this.fav.setActiveCity(city);
+    await this.loadWeather();
+  }
+
+  async loadWeather() {
+    if (!this.activeCity) return;
+    this.loading = true;
+    this.errorMessage = '';
+    this.weather = null;
+
+    this.weatherService.getCurrentWeather(this.activeCity).subscribe({
+      next: (data) => {
+        this.weather = data;
+        this.loading = false;
+      },
+      error: () => {
+        this.errorMessage = 'Nepodařilo se načíst počasí.';
+        this.loading = false;
+      },
+    });
+  }
+}

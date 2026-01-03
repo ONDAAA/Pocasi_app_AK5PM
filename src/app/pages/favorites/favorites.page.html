@@ -1,30 +1,19 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Oblíbené</ion-title>
+    <ion-title>Oblíbená města</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-list *ngIf="favorites.length; else empty">
-    <ion-item-sliding *ngFor="let f of favorites">
-      <ion-item>
-        <ion-label>
-          <h2>{{ f.name }}</h2>
-          <p *ngIf="f.country">{{ f.country }}</p>
-        </ion-label>
-      </ion-item>
-
-      <ion-item-options side="end">
-        <ion-item-option color="danger" (click)="remove(f.name)">
-          Smazat
-        </ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
+  <ion-list>
+    <ion-item *ngFor="let c of favorites" button (click)="setActive(c)">
+      <ion-label>
+        <h2>{{ c }}</h2>
+        <p *ngIf="c === activeCity">Aktivní</p>
+      </ion-label>
+      <ion-button fill="clear" color="danger" slot="end" (click)="remove(c); $event.stopPropagation()">
+        Odebrat
+      </ion-button>
+    </ion-item>
   </ion-list>
-
-  <ng-template #empty>
-    <ion-text color="medium">
-      <p>Zatím nemáš žádné oblíbené město.</p>
-    </ion-text>
-  </ng-template>
 </ion-content>

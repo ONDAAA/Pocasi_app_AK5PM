@@ -1,7 +1,8 @@
+
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { FavoritesService, FavoriteCity } from '../../services/favorites.service';
+import { FavoritesService } from '../../services/favorites.service';
 
 @Component({
   selector: 'app-favorites',
@@ -11,16 +12,27 @@ import { FavoritesService, FavoriteCity } from '../../services/favorites.service
   styleUrls: ['./favorites.page.scss'],
 })
 export class FavoritesPage {
-  favorites: FavoriteCity[] = [];
+  favorites: string[] = [];
+  activeCity = '';
 
   constructor(private favoritesService: FavoritesService) {}
 
   async ionViewWillEnter() {
-    this.favorites = await this.favoritesService.list();
+    await this.refresh();
   }
 
-  async remove(name: string) {
-    await this.favoritesService.removeByName(name);
-    this.favorites = await this.favoritesService.list();
+  async refresh() {
+    this.favorites = await this.favoritesService.getCities();
+    this.activeCity = await this.favoritesService.getActiveCity();
+  }
+
+  async setActive(city: string) {
+    await this.favoritesService.setActiveCity(city);
+    await this.refresh();
+  }
+
+  async remove(city: string) {
+    await this.favoritesService.removeCity(city);
+    await this.refresh();
   }
 }

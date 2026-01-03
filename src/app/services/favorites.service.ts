@@ -1,49 +1,47 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from './storage.service';
 
-export type FavoriteCity = {
-  name: string;
-  country?: string;
-  addedAt: number;
-};
+const KEY_CITIES = 'cities';
+const KEY_ACTIVE = 'activeCity';
 
-const FAVORITES_KEY = 'favorites.cities.v1';
-
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class FavoritesService {
   constructor(private storage: StorageService) {}
 
-  async list(): Promise<FavoriteCity[]> {
-    return this.storage.getJson<FavoriteCity[]>(FAVORITES_KEY, []);
+  async getCities(): Promise<string[]> {
+    return this.storage.get<string[]>(KEY_CITIES, ['Ostrava']); // default
   }
 
-  async add(city: { name: string; country?: string }): Promise<void> {
-    const favorites = await this.list();
-    const exists = favorites.some(
-      (c) => c.name.toLowerCase() === city.name.toLowerCase()
-    );
-    if (exists) return;
+  async addCity(city: string): Promise<void> {
+    const c = city.trim();
+    if (!c) return;
 
-    favorites.unshift({
-      name: city.name,
-      country: city.country,
-      addedAt: Date.now(),
-    });
+    const cities = await this.getCities();
+    const exists = cities.some(x => x.toLowerCase() === c.toLowerCase());
+    if (!exists) cities.unshift(c);
 
-    await this.storage.setJson(FAVORITES_KEY, favorites);
+    await this.storage.set(KEY_CITIES, cities);
+
+    const active = await this.getActiveCity();
+    if (!active) await this.setActiveCity(c);
   }
 
-  async removeByName(name: string): Promise<void> {
-    const favorites = await this.list();
-    const filtered = favorites.filter(
-      (c) => c.name.toLowerCase() !== name.toLowerCase()
-    );
-    await this.storage.setJson(FAVORITES_KEY, filtered);
+  async removeCity(city: string): Promise<void> {
+    const cities = await this.getCities();
+    const filtered = cities.filter(x => x.toLowerCase() !== city.toLowerCase());
+    await this.storage.set(KEY_CITIES, filtered);
+
+    const active = await this.getActiveCity();
+    if (active && active.toLowerCase() === city.toLowerCase()) {
+      await this.setActiveCity(filtered[0] ?? '');
+    }
   }
 
-  async clear(): Promise<void> {
-    await this.storage.remove(FAVORITES_KEY);
+  async getActiveCity(): Promise<string> {
+    return this.storage.get<string>(KEY_ACTIVE, '');
+  }
+
+  async setActiveCity(city: string): Promise<void> {
+    await this.storage.set(KEY_ACTIVE, city);
   }
 }
