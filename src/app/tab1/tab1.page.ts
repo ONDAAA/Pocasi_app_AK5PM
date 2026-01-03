@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 
 import { FavoritesService } from '../services/favorites.service';
 import { WeatherService } from '../services/weather.service';
+import { SettingsService } from '../services/settings.service';
 
 @Component({
   selector: 'app-tab1',
@@ -21,16 +22,25 @@ export class Tab1Page implements OnInit {
 
   constructor(
     private fav: FavoritesService,
-    private weatherService: WeatherService
+    private weatherService: WeatherService,
+    private settingsService: SettingsService
   ) {}
 
   async ngOnInit() {
     await this.loadCities();
   }
 
+  unit: 'c' | 'f' = 'c';
+
   async ionViewWillEnter() {
+    const s = await this.settingsService.getSettings();
+    this.unit = s.tempUnit;
     await this.loadCities();
   }
+
+displayTempCtoUnit(tempC: number): number {
+  return this.unit === 'c' ? tempC : Math.round((tempC * 9) / 5 + 32);
+}
 
   async loadCities() {
     this.cities = await this.fav.getCities();
@@ -62,4 +72,7 @@ export class Tab1Page implements OnInit {
       },
     });
   }
+
+  
+
 }

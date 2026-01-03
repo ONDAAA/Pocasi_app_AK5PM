@@ -1,17 +1,105 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
+    <ion-title>Nastavení</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <ion-spinner *ngIf="loading"></ion-spinner>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <!-- ACCOUNT -->
+  <ion-card *ngIf="!loading">
+    <ion-card-header>
+      <ion-card-title>Účet</ion-card-title>
+
+      <ion-card-subtitle *ngIf="isLoggedIn">
+        Přihlášen: {{ userEmail || 'uživatel' }}
+      </ion-card-subtitle>
+
+      <ion-card-subtitle *ngIf="!isLoggedIn">
+        Nejste přihlášený
+      </ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div *ngIf="!isLoggedIn" class="btn-row">
+        <ion-button expand="block" (click)="goLogin()">Přihlásit</ion-button>
+        <ion-button expand="block" fill="outline" (click)="goRegister()">Registrovat</ion-button>
+      </div>
+
+      <div *ngIf="isLoggedIn" class="btn-row">
+        <ion-button expand="block" color="medium" (click)="logout()">Odhlásit</ion-button>
+      </div>
+
+      <ion-text color="medium">
+        <p class="hint">Tip: Bez přihlášení se data ukládají jen do zařízení.</p>
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- APP SETTINGS -->
+  <ion-card *ngIf="!loading">
+    <ion-card-header>
+      <ion-card-title>Aplikace</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Jednotky teploty</ion-label>
+
+        <ion-segment
+          [value]="settings.tempUnit"
+          (ionChange)="onTempUnitChange($event)"
+        >
+          <ion-segment-button value="c">
+            <ion-label>°C</ion-label>
+          </ion-segment-button>
+
+          <ion-segment-button value="f">
+            <ion-label>°F</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-item>
+
+      <ion-item>
+        <ion-toggle
+          [checked]="settings.autoRefresh"
+          (ionChange)="toggleAutoRefresh($event.detail.checked)"
+        >
+          Auto refresh při otevření
+        </ion-toggle>
+      </ion-item>
+
+      <ion-item>
+        <ion-toggle
+          [checked]="settings.useSystemTheme"
+          (ionChange)="toggleUseSystemTheme($event.detail.checked)"
+        >
+          Použít systémový vzhled
+        </ion-toggle>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- DATA -->
+  <ion-card *ngIf="!loading">
+    <ion-card-header>
+      <ion-card-title>Správa dat</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-button
+        expand="block"
+        color="danger"
+        fill="outline"
+        (click)="resetLocalData()"
+      >
+        Resetovat lokální data (města, nastavení)
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-text color="medium">
+    <p class="footer">Počasí_app_AK5PM</p>
+  </ion-text>
 </ion-content>

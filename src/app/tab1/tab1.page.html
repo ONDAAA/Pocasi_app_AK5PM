@@ -34,7 +34,7 @@
     </ion-card-header>
 
     <ion-card-content>
-      <div class="temp">{{ weather.current?.temp_c }}°C</div>
+      <div class="temp">{{ displayTempCtoUnit(weather.current?.temp_c) }}°{{ unit === 'c' ? 'C' : 'F' }}</div>
 
       <ion-grid>
         <ion-row>
