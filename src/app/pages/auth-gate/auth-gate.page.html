@@ -1,22 +1,57 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Počasí</ion-title>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content class="ion-padding">
-  <ion-text>
-    <h2>Pokračovat</h2>
-    <p>Vyber si, jak chceš aplikaci používat.</p>
-  </ion-text>
+<ion-content fullscreen="true" class="gate-content">
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero-icon">
+        <ion-icon name="partly-sunny-outline"></ion-icon>
+      </div>
 
-  <ion-button expand="block" (click)="goLogin()">Přihlásit se</ion-button>
-  <ion-button expand="block" fill="outline" (click)="goRegister()">Registrovat</ion-button>
+      <div class="hero-text">
+        <div class="h1">Počasí</div>
+        <div class="p">
+          Ondřej Zemánek · AK5PM · 2026
+        </div>
+      </div>
+    </div>
 
-  <ion-item lines="none" style="margin-top: 12px;"></ion-item>
+    <div class="glass-card">
+      <div class="bg"></div>
 
-  <ion-button expand="block" color="medium" (click)="continueAsGuest()">
-    Pokračovat bez účtu
-  </ion-button>
+      <div class="card-head">
+        <div class="card-title">Účet</div>
+        <div class="card-sub">Synchronizace měst a nastavení mezi zařízeními</div>
+      </div>
+
+      <div class="card-body btn-col">
+        <ion-button expand="block" class="btn-primary" (click)="goLogin()">
+          Přihlásit se
+        </ion-button>
+
+        <ion-button expand="block" fill="outline" class="btn-outline" (click)="goRegister()">
+          Registrovat
+        </ion-button>
+      </div>
+    </div>
+
+    <div class="glass-card alt">
+      <div class="bg"></div>
+
+      <div class="card-head">
+        <div class="card-title">Bez účtu</div>
+        <div class="card-sub">Data se ukládají jen do tohoto zařízení</div>
+      </div>
+
+      <div class="card-body">
+        <ion-button expand="block" class="btn-secondary" (click)="continueAsGuest()">
+          Pokračovat bez účtu
+        </ion-button>
+
+        <div class="hint">
+          Jde změnit kdykoliv v nastavení.
+        </div>
+      </div>
+    </div>
+
+   
+  </div>
 </ion-content>
-

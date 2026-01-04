@@ -1,0 +1,175 @@
+:host {
+  --card-radius: 22px;
+}
+
+
+.gate-content {
+  --background: radial-gradient(circle at 20% 10%, #18224a 0%, #0a0d18 55%, #070812 100%);
+}
+
+.wrap {
+
+  min-height: calc(100vh - 56px - env(safe-area-inset-bottom)); 
+  flex-direction: column;
+  justify-content: center; 
+  padding: 18px 14px 24px;
+  max-width: 520px;       
+  margin: 0 auto;           
+}
+
+
+.topbar {
+  --background: rgba(10, 12, 20, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  --padding-start: 14px;
+  --padding-end: 14px;
+}
+
+.title {
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.2px;
+}
+
+/* HERO */
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0 14px;
+}
+
+.hero-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.hero-icon ion-icon {
+  font-size: 28px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.hero-text .h1 {
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.2px;
+}
+
+.hero-text .p {
+  margin-top: 2px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+/* GLASS CARD */
+.glass-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  padding: 14px 16px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transform: translateZ(0);
+  margin-bottom: 12px;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.glass-card:active {
+  transform: scale(0.99);
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* background layer */
+.glass-card .bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(120, 140, 255, 0.35), transparent 55%),
+    radial-gradient(circle at 70% 80%, rgba(160, 120, 255, 0.22), transparent 55%),
+    radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.10), transparent 55%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.glass-card.alt .bg {
+  background:
+    radial-gradient(circle at 30% 20%, rgba(110, 168, 255, 0.22), transparent 55%),
+    radial-gradient(circle at 70% 80%, rgba(120, 255, 210, 0.10), transparent 55%),
+    radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.08), transparent 55%);
+}
+
+.card-head,
+.card-body {
+  position: relative;
+  z-index: 1;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.2px;
+}
+
+.card-sub {
+  margin-top: 4px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.card-body {
+  margin-top: 12px;
+}
+
+.btn-col {
+  display: grid;
+  gap: 10px;
+}
+
+/* BUTTONS */
+.btn-primary {
+  --border-radius: 16px;
+}
+
+.btn-outline {
+  --border-radius: 16px;
+  --border-color: rgba(255, 255, 255, 0.22);
+  --color: rgba(255, 255, 255, 0.92);
+}
+
+.btn-secondary {
+  --border-radius: 16px;
+  --background: rgba(255, 255, 255, 0.10);
+  --color: rgba(255, 255, 255, 0.92);
+}
+
+.hint {
+  margin-top: 10px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.35;
+}
+
+/* FOOTER */
+.footer {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 16px;
+  padding-bottom: env(safe-area-inset-bottom);
+
+}
+
