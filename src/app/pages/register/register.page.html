@@ -1,31 +1,82 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Registrace</ion-title>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content class="ion-padding">
-  <ion-item>
-    <ion-input label="Email" labelPlacement="stacked" [(ngModel)]="email" type="email"></ion-input>
-  </ion-item>
+<ion-content fullscreen="true" class="auth-content">
+  <div class="auth-wrap">
+    <div class="hero">
+      <div class="hero-icon">
+        <ion-icon name="person-add-outline" aria-hidden="true"></ion-icon>
+      </div>
 
-  <ion-item>
-    <ion-input label="Heslo" labelPlacement="stacked" [(ngModel)]="password" type="password"></ion-input>
-  </ion-item>
+      <div class="hero-text">
+        <div class="hero-title">Vytvoř si účet</div>
+        <div class="hero-sub">
+          Ulož si města a nastavení napříč zařízeními.
+        </div>
+      </div>
+    </div>
 
-  <ion-item>
-    <ion-input label="Heslo znovu" labelPlacement="stacked" [(ngModel)]="password2" type="password"></ion-input>
-  </ion-item>
+    <ion-card class="glass-card">
+      <ion-card-content>
+        <ion-item class="glass-item" lines="none">
+          <ion-input
+            label="Email"
+            labelPlacement="stacked"
+            [(ngModel)]="email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+            enterkeyhint="next"
+          ></ion-input>
+        </ion-item>
 
-  <ion-text color="danger" *ngIf="error">
-    <p style="margin-top: 8px;">{{ error }}</p>
-  </ion-text>
+        <ion-item class="glass-item" lines="none">
+          <ion-input
+            label="Heslo"
+            labelPlacement="stacked"
+            [(ngModel)]="password"
+            type="password"
+            autocomplete="new-password"
+            enterkeyhint="next"
+          ></ion-input>
+        </ion-item>
 
-  <ion-button expand="block" (click)="doRegister()" [disabled]="loading">
-    Vytvořit účet
-  </ion-button>
+        <ion-item class="glass-item" lines="none">
+          <ion-input
+            label="Heslo znovu"
+            labelPlacement="stacked"
+            [(ngModel)]="password2"
+            type="password"
+            autocomplete="new-password"
+            enterkeyhint="done"
+          ></ion-input>
+        </ion-item>
 
-  <ion-button expand="block" fill="clear" routerLink="/login">
-    Už máš účet? Přihlásit
-  </ion-button>
+        <div class="err" *ngIf="error">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span>{{ error }}</span>
+        </div>
+
+        <ion-button
+          class="primary-btn"
+          expand="block"
+          (click)="doRegister()"
+          [disabled]="loading"
+        >
+          <ion-spinner *ngIf="loading" name="dots"></ion-spinner>
+          <span *ngIf="!loading">Vytvořit účet</span>
+        </ion-button>
+
+        <ion-button
+          class="link-btn"
+          expand="block"
+          fill="clear"
+          routerLink="/login"
+          [disabled]="loading"
+        >
+          Už máš účet? Přihlásit
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    
+  </div>
 </ion-content>

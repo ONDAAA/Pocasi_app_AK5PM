@@ -17,7 +17,8 @@ import {
   trashOutline,
   sunnyOutline,
   waterOutline,
-  speedometerOutline
+  speedometerOutline,
+  personAddOutline,
 } from 'ionicons/icons';
 
 import { routes } from './app/app.routes';
@@ -37,7 +38,8 @@ addIcons({
   'trash-outline': trashOutline,
   'sunny-outline': sunnyOutline,
   'water-outline': waterOutline,
-  'speedometer-outline': speedometerOutline
+  'speedometer-outline': speedometerOutline,
+  'person-add-outline': personAddOutline
 });
 
 
