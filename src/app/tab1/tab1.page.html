@@ -153,10 +153,29 @@
         <div class="m-sub">last_updated</div>
       </button>
     </div>
+    <!-- FORECAST -->
+    <div class="forecast" *ngIf="!loading && forecastDays.length">
+        <div class="forecast-title">Předpověď</div>
 
-    <div class="footer-hint" *ngIf="!loading && weather">
-      <ion-icon name="sparkles-outline"></ion-icon>
-      <span>Pull-to-refresh nebo klikni na refresh vpravo nahoře.</span>
+        <div class="forecast-row">
+            <div class="forecast-card" *ngFor="let d of forecastDays">
+            <div class="f-top">
+                <div class="f-day">{{ d.dayName }} {{ formatForecastDay(d.date) }}</div>
+
+                
+                <img *ngIf="d.iconUrl" class="f-img" [src]="d.iconUrl" alt="" />
+            </div>
+
+            <div class="f-temps">
+                <span class="f-max">{{ d.max }}°</span>
+                <span class="f-sep"></span>
+                <span class="f-min">{{ d.min }}°</span>
+            </div>
+
+            <div class="f-cond">{{ d.text }}</div>
+            </div>
+        </div>
     </div>
+    
   </div>
 </ion-content>

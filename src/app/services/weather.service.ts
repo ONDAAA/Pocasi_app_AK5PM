@@ -23,4 +23,9 @@ export class WeatherService {
       `${this.baseUrl}/search.json?key=${this.apiKey}&q=${q}&lang=cs`
     );
   }
+
+  getForecast(city: string, days = 7) {
+  const q = encodeURIComponent(city);
+  return this.http.get(`${this.baseUrl}/forecast.json?key=${this.apiKey}&q=${q}&days=${days}&aqi=no&alerts=no`);
+}
 }

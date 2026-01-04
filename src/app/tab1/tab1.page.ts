@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 
 import { FavoritesService } from '../services/favorites.service';
 import { WeatherService } from '../services/weather.service';
@@ -22,6 +22,15 @@ export class Tab1Page implements OnInit, OnDestroy {
   loading = false;
   errorMessage = '';
 
+  forecastDays: Array<{
+    date: string;
+    dayName: string;
+    iconUrl: string;
+    text: string;
+    max: number;
+    min: number;
+  }> = [];
+
   unit: TempUnit = 'c';
 
   private subSettings?: Subscription;
@@ -33,11 +42,9 @@ export class Tab1Page implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    // settings subscription (globální stav)
     this.subSettings = this.settingsService.state$.subscribe((s) => {
       this.unit = s.tempUnit;
-      // není nutné reloadovat weather, jen se přepočítá display
-      // (pokud bys chtěl, můžeš tu zavolat this.loadWeather(), ale není potřeba)
+
     });
 
     await this.loadCities();
@@ -48,7 +55,6 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-    // refresh cities + active city při návratu na tab
     await this.loadCities();
   }
 
@@ -56,7 +62,6 @@ export class Tab1Page implements OnInit, OnDestroy {
     if (tempC === null || tempC === undefined) return 0;
     const c = Number(tempC);
     if (Number.isNaN(c)) return 0;
-
     return this.unit === 'c' ? Math.round(c) : Math.round((c * 9) / 5 + 32);
   }
 
@@ -70,6 +75,7 @@ export class Tab1Page implements OnInit, OnDestroy {
       await this.loadWeather();
     } else {
       this.weather = null;
+      this.forecastDays = [];
       this.errorMessage = '';
     }
   }
@@ -80,36 +86,78 @@ export class Tab1Page implements OnInit, OnDestroy {
     await this.loadWeather();
   }
 
+  bump = false;
+
   async loadWeather() {
-    if (!this.activeCity) return;
+    const city = (this.activeCity ?? '').trim();
+    if (!city) return;
 
     this.loading = true;
     this.errorMessage = '';
     this.weather = null;
+    this.forecastDays = [];
 
-    this.weatherService.getCurrentWeather(this.activeCity).subscribe({
-      next: (data) => {
-        this.weather = data;
-        this.loading = false;
-      },
-      error: () => {
-        this.errorMessage = 'Nepodařilo se načíst počasí.';
-        this.loading = false;
-      },
-    });
+    try {
+      
+      const [w, f]: any[] = await Promise.all([
+        firstValueFrom(this.weatherService.getCurrentWeather(city)),
+        firstValueFrom(this.weatherService.getForecast(city, 7)),
+      ]);
+
+      this.weather = w;
+
+      const days = f?.forecast?.forecastday ?? [];
+      this.forecastDays = days.map((d: any) => {
+        const dateStr = String(d?.date ?? '');
+        const dt = new Date(dateStr + 'T00:00:00');
+        const dayNames = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'];
+        const dayName = dayNames[dt.getDay()] ?? '';
+
+        const icon = d?.day?.condition?.icon ? `https:${d.day.condition.icon}` : '';
+        const text = d?.day?.condition?.text ?? '—';
+
+        const maxC = Number(d?.day?.maxtemp_c);
+        const minC = Number(d?.day?.mintemp_c);
+
+        return {
+          date: dateStr,
+          dayName,
+          iconUrl: icon,
+          text,
+          max: this.displayTempCtoUnit(maxC),
+          min: this.displayTempCtoUnit(minC),
+        };
+      });
+    } catch (e) {
+      this.errorMessage = 'Nepodařilo se načíst počasí.';
+      this.weather = null;
+      this.forecastDays = [];
+    } finally {
+      this.loading = false;
+    }
   }
 
-  bump = false;
+
+  formatForecastDay(dateStr: string): string {
+    const d = new Date(dateStr + 'T00:00:00');
+    const days = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'];
+    const day = days[d.getDay()] ?? '';
+    return `${day} ${d.getDate()}.${d.getMonth() + 1}.`;
+  }
 
   async refreshWithHaptics() {
-    try { await Haptics.impact({ style: ImpactStyle.Light }); } catch {}
+    try {
+      await Haptics.impact({ style: ImpactStyle.Light });
+    } catch {}
     this.bump = true;
     setTimeout(() => (this.bump = false), 250);
     await this.loadWeather();
   }
 
   async metricTap(label: string) {
-    try { await Haptics.impact({ style: ImpactStyle.Medium }); } catch {}
+    try {
+      await Haptics.impact({ style: ImpactStyle.Medium });
+    } catch {}
     console.log('metric tap:', label);
   }
 
@@ -118,5 +166,4 @@ export class Tab1Page implements OnInit, OnDestroy {
     // @ts-ignore
     ev.target?.complete?.();
   }
-
 }
