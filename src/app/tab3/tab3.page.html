@@ -1,101 +1,117 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Nastavení</ion-title>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content class="ion-padding">
-  <ion-spinner *ngIf="loading"></ion-spinner>
 
-  <!-- ACCOUNT -->
-  <ion-card *ngIf="!loading">
-    <ion-card-header>
-      <ion-card-title>Účet</ion-card-title>
+<ion-content fullscreen="true" class="tab3-content">
+  <div class="wrap">
+    <ion-spinner *ngIf="loading" class="spinner"></ion-spinner>
 
-      <ion-card-subtitle *ngIf="isLoggedIn">
-        Přihlášen: {{ userEmail || 'uživatel' }}
-      </ion-card-subtitle>
+    <!-- ACCOUNT -->
+    <div class="glass-card" *ngIf="!loading">
+      <div class="bg"></div>
 
-      <ion-card-subtitle *ngIf="!isLoggedIn">
-        Nejste přihlášený
-      </ion-card-subtitle>
-    </ion-card-header>
+      <div class="card-head">
+        <div class="card-title">Účet</div>
 
-    <ion-card-content>
-      <div *ngIf="!isLoggedIn" class="btn-row">
-        <ion-button expand="block" (click)="goLogin()">Přihlásit</ion-button>
-        <ion-button expand="block" fill="outline" (click)="goRegister()">Registrovat</ion-button>
+        <div class="card-sub" *ngIf="isLoggedIn">
+          Přihlášen: <span class="accent">{{ userEmail || 'uživatel' }}</span>
+        </div>
+
+        <div class="card-sub" *ngIf="!isLoggedIn">
+          Nejste přihlášený
+        </div>
       </div>
 
-      <div *ngIf="isLoggedIn" class="btn-row">
-        <ion-button expand="block" color="medium" (click)="logout()">Odhlásit</ion-button>
+      <div class="card-body">
+        <div *ngIf="!isLoggedIn" class="btn-col">
+          <ion-button expand="block" class="btn-primary" (click)="goLogin()">
+            Přihlásit
+          </ion-button>
+
+          <ion-button expand="block" fill="outline" class="btn-outline" (click)="goRegister()">
+            Registrovat
+          </ion-button>
+        </div>
+
+        <div *ngIf="isLoggedIn" class="btn-col">
+          <ion-button expand="block" class="btn-secondary" (click)="logout()">
+            Odhlásit
+          </ion-button>
+        </div>
+
+        <div class="hint">
+          Bez přihlášení se data ukládají jen do zařízení.
+        </div>
+      </div>
+    </div>
+
+    <!-- APP SETTINGS -->
+    <div class="glass-card" *ngIf="!loading">
+      <div class="bg"></div>
+
+      <div class="card-head">
+        <div class="card-title">Aplikace</div>
       </div>
 
-      <ion-text color="medium">
-        <p class="hint">Tip: Bez přihlášení se data ukládají jen do zařízení.</p>
-      </ion-text>
-    </ion-card-content>
-  </ion-card>
+      <div class="card-body">
+        <div class="row-line">
+          <div class="row-label">Jednotky teploty</div>
 
-  <!-- APP SETTINGS -->
-  <ion-card *ngIf="!loading">
-    <ion-card-header>
-      <ion-card-title>Aplikace</ion-card-title>
-    </ion-card-header>
+          <ion-segment class="seg" [value]="settings.tempUnit">
+            <ion-segment-button value="c" (click)="setTempUnit('c')">
+              <ion-label>°C</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="f" (click)="setTempUnit('f')">
+              <ion-label>°F</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+        </div>
 
-    <ion-card-content>
-      <ion-item>
-        <ion-label>Jednotky teploty</ion-label>
+        <div class="divider"></div>
 
-        <ion-segment [value]="settings.tempUnit">
-          <ion-segment-button value="c" (click)="setTempUnit('c')">
-            <ion-label>°C</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="f" (click)="setTempUnit('f')">
-            <ion-label>°F</ion-label>
-          </ion-segment-button>
-        </ion-segment>
-      </ion-item>
+        <ion-item lines="none" class="item">
+          <ion-toggle
+            justify="space-between"
+            [checked]="settings.autoRefresh"
+            (ionChange)="toggleAutoRefresh($event.detail.checked)"
+          >
+            Auto refresh při otevření
+          </ion-toggle>
+        </ion-item>
 
-      <ion-item>
-        <ion-toggle
-          [checked]="settings.autoRefresh"
-          (ionChange)="toggleAutoRefresh($event.detail.checked)"
+        <ion-item lines="none" class="item">
+          <ion-toggle
+            justify="space-between"
+            [checked]="settings.useSystemTheme"
+            (ionChange)="toggleUseSystemTheme($event.detail.checked)"
+          >
+            Použít systémový vzhled
+          </ion-toggle>
+        </ion-item>
+      </div>
+    </div>
+
+    <!-- DATA -->
+    <div class="glass-card danger" *ngIf="!loading">
+      <div class="bg"></div>
+
+      <div class="card-head">
+        <div class="card-title">Správa dat</div>
+        <div class="card-sub">Lokální data v zařízení (ne Firestore)</div>
+      </div>
+
+      <div class="card-body">
+        <ion-button
+          expand="block"
+          fill="solid"
+          class="btn-danger"
+          (click)="resetLocalData()"
         >
-          Auto refresh při otevření
-        </ion-toggle>
-      </ion-item>
+          Resetovat lokální data (města, nastavení)
+        </ion-button>
+      </div>
+    </div>
 
-      <ion-item>
-        <ion-toggle
-          [checked]="settings.useSystemTheme"
-          (ionChange)="toggleUseSystemTheme($event.detail.checked)"
-        >
-          Použít systémový vzhled
-        </ion-toggle>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- DATA -->
-  <ion-card *ngIf="!loading">
-    <ion-card-header>
-      <ion-card-title>Správa dat</ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-      <ion-button
-        expand="block"
-        color="danger"
-        fill="outline"
-        (click)="resetLocalData()"
-      >
-        Resetovat lokální data (města, nastavení)
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-text color="medium">
-    <p class="footer">Počasí_app_AK5PM</p>
-  </ion-text>
+    <div class="footer" *ngIf="!loading">
+      Počasí_app_AK5PM
+    </div>
+  </div>
 </ion-content>

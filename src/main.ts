@@ -23,6 +23,12 @@ import {
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 
+import { tabTransition } from './app/animations/tab-transition';
+
+provideIonicAngular({
+  navAnimation: tabTransition
+}),
+
 addIcons({
   'partly-sunny-outline': partlySunnyOutline,
   'search-outline': searchOutline,
