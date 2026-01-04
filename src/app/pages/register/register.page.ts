@@ -28,20 +28,63 @@ export class RegisterPage {
 
   async doRegister() {
     this.error = '';
+
+    const email = this.email.trim();
+
+    // ===== VALIDACE =====
+    if (!email) {
+      this.error = 'Zadej email.';
+      return;
+    }
+
+    if (!this.isValidEmail(email)) {
+      this.error = 'Email nemá správný formát.';
+      return;
+    }
+
+    if (!this.password || this.password.length < 6) {
+      this.error = 'Heslo musí mít alespoň 6 znaků.';
+      return;
+    }
+
     if (this.password !== this.password2) {
       this.error = 'Hesla se neshodují.';
       return;
     }
 
+    // ===== REGISTER =====
     this.loading = true;
     try {
-      await this.auth.register(this.email.trim(), this.password);
+      await this.auth.register(email, this.password);
       await this.appMode.setMode('user');
       await this.router.navigateByUrl('/tabs', { replaceUrl: true });
     } catch (e: any) {
-      this.error = e?.message ?? 'Chyba registrace';
+      this.error = this.mapFirebaseError(e);
     } finally {
       this.loading = false;
+    }
+  }
+
+  // ===== HELPERS =====
+
+  private isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  private mapFirebaseError(e: any): string {
+    const code = e?.code ?? '';
+
+    switch (code) {
+      case 'auth/email-already-in-use':
+        return 'Účet s tímto emailem už existuje.';
+      case 'auth/invalid-email':
+        return 'Email nemá správný formát.';
+      case 'auth/weak-password':
+        return 'Heslo je příliš slabé (min. 6 znaků).';
+      case 'auth/network-request-failed':
+        return 'Chyba připojení k síti.';
+      default:
+        return 'Registrace se nezdařila. Zkus to znovu.';
     }
   }
 }
