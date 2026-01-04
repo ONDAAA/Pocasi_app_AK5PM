@@ -21,10 +21,7 @@ export class AuthGatePage {
   }
 
   async goLogin() {
-    console.log('test');
-    alert('test');
     await this.router.navigateByUrl('/login');
-
   }
 
   async goRegister() {
