@@ -14,6 +14,7 @@ import {
   searchOutline,
   settingsOutline,
   cloudOutline,
+  trashOutline,
 } from 'ionicons/icons';
 
 import { routes } from './app/app.routes';
@@ -24,6 +25,7 @@ addIcons({
   'search-outline': searchOutline,
   'settings-outline': settingsOutline,
   'cloud-outline': cloudOutline,
+  'trash-outline': trashOutline,
 });
 
 

@@ -4,7 +4,7 @@
   --card-radius: 22px;
 }
 
-/* HEADER (sticky search) */
+
 .search-toolbar {
   --background: rgba(10, 12, 20, 0.55);
   --padding-start: 14px;
@@ -33,7 +33,7 @@
   --padding-end: 12px;
 }
 
-/* CONTENT background + full width */
+
 ion-content.tab2-content {
   --background: radial-gradient(circle at 20% 10%, #18224a 0%, #0a0d18 55%, #070812 100%);
   --padding-start: 0;
@@ -52,45 +52,58 @@ ion-content.tab2-content {
   gap: 12px;
 }
 
-/* ====== SLIDING WRAPPER FIXES ====== */
-/* ZRUŠ margin na ion-item-sliding – spacing řeší .cards gap */
+
 ion-item-sliding.sliding-wrap {
   background: transparent;
-  margin: 0; /* <- tohle je zásadní fix */
+  border-radius: var(--card-radius);
+  overflow: hidden; 
 }
 
-/* ion-item uvnitř sliding nesmí přidávat vlastní layout */
+
 ion-item.sliding-item {
   --background: transparent;
-  --inner-padding-end: 0px;
-  --padding-start: 0px;
-  --min-height: 0px;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --min-height: 0;
   --border-color: transparent;
-  --highlight-color-focused: transparent;
-  --highlight-color-valid: transparent;
-  --highlight-color-invalid: transparent;
   --ripple-color: transparent;
-
-  background: transparent;
 }
 
-/* úplně zruš defaultní ::part(native) padding a čáry */
 ion-item.sliding-item::part(native) {
-  background: transparent;
   padding: 0 !important;
-  min-height: 0 !important;
+  background: transparent !important;
   border: none !important;
 }
 
-ion-item-options {
+/* options pozadí */
+ion-item-options.delete-options {
+  background: transparent;
   border: none;
 }
 
-ion-item-option {
-  min-width: 64px;
+/* delete pruh s ikonou */
+ion-item-option.delete-option {
+  --background: #ff3b30;      
+  --color: #fff;
+  width: 86px;              
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* ====== CARD DESIGN (beze změn, jen full width) ====== */
+ion-item-option.delete-option ion-icon {
+  font-size: 24px;
+  color: #fff;
+  opacity: 1;
+}
+
+
+ion-item.sliding-item .city-card {
+  width: 100%;
+  margin: 0;
+}
+
+/* ====== CARD DESIGN ====== */
 .city-card {
   width: 100%;
   position: relative;

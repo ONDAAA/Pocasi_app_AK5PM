@@ -53,21 +53,32 @@
 </ion-header>
 
 <ion-content fullscreen="true" class="tab2-content">
-  <!-- optional refresher -->
+  
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- seznam "karet" -->
+  
    <div class="cards">
     <ion-item-sliding
       class="sliding-wrap"
       *ngFor="let c of items; trackBy: trackByCity"
+      (ionDrag)="onSlidingDrag($event)"
     >
-      <!-- Ion item jen jako "container" pro swipe gesture -->
-      <ion-item lines="none" class="sliding-item">
+      <!-- červená delete akce -->
+      <ion-item-options side="end" class="delete-options">
+        <ion-item-option
+          color="danger"
+          class="delete-option"
+          (click)="remove(c.name)"
+        >
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+
+      
+      <ion-item class="sliding-item" lines="none">
         <div class="city-card" (click)="openCity(c)">
-          <!-- pozadí (gradient + hvězdy) -->
           <div class="bg"></div>
 
           <div class="row top">
@@ -87,11 +98,7 @@
 
           <div class="row bottom">
             <div class="cond">
-              <ion-icon
-                *ngIf="c.warning"
-                name="warning-outline"
-                class="warn"
-              ></ion-icon>
+              <ion-icon *ngIf="c.warning" name="warning-outline" class="warn"></ion-icon>
               <span>{{ c.condition }}</span>
             </div>
 
@@ -102,37 +109,17 @@
             </div>
           </div>
 
-          <!-- quick tlačítka nechávám -->
+         
           <div class="actions" (click)="$event.stopPropagation()">
             <ion-button fill="clear" size="small" (click)="setActive(c.name)">
               <ion-icon name="home-outline"></ion-icon>
             </ion-button>
-            <ion-button
-              fill="clear"
-              size="small"
-              color="danger"
-              (click)="remove(c.name)"
-            >
-              <ion-icon name="trash-outline"></ion-icon>
-            </ion-button>
           </div>
         </div>
       </ion-item>
-
-      <!-- Swipe doleva -->
-      <ion-item-options side="end">
-        <ion-item-option color="primary" (click)="setActive(c.name)">
-          <ion-icon slot="icon-only" name="home-outline"></ion-icon>
-        </ion-item-option>
-
-        <ion-item-option color="danger" (click)="remove(c.name)">
-          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-        </ion-item-option>
-      </ion-item-options>
     </ion-item-sliding>
 
-    <!-- empty state -->
-    <div class="empty" *ngIf="!items?.length">
+    <div class="empty" *ngIf="!items.length">
       <div class="empty-title">Zatím tu nic nemáš</div>
       <div class="empty-sub">Přidej město nahoře přes vyhledávání.</div>
     </div>

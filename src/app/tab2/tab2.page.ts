@@ -7,6 +7,9 @@ import { firstValueFrom } from 'rxjs';
 import { FavoritesService } from '../services/favorites.service';
 import { WeatherService } from '../services/weather.service';
 import { SettingsService } from '../services/settings.service';
+import { IonItemSliding } from '@ionic/angular';
+
+
 
 type TempUnit = 'c' | 'f';
 
@@ -256,4 +259,9 @@ export class Tab2Page {
     if (this.unit === 'c') return Math.round(tempC);
     return Math.round((tempC * 9) / 5 + 32);
   }
+
+  onSlidingDrag(ev: any) {
+
+}
+
 }
