@@ -93,15 +93,58 @@ export class Tab2Page {
   }
 
   async addCityFromQuery() {
-    const name = this.query?.trim();
-    if (!name) return;
+  const input = this.normalizeCityInput(this.query);
+  if (!input) return;
 
-    await this.fav.addCity(name);
+  // 1) Ověř existenci města přes API (když nenajde -> error)
+  try {
+    const data: any = await firstValueFrom(this.weather.getCurrentWeather(input));
 
-    // po přidání: refresh + vyčistit search
-    this.clearSearch();
+    // 2) Vezmi kanonický název z API (lepší než ruční title case)
+    const canonical =
+      this.normalizeCityInput(data?.location?.name) || this.toTitleCase(input);
+
+    // 3) Nepřidávat duplicity (case-insensitive)
+    const existing = await this.safeListCities();
+    const already = existing.some((x) => this.equalsCity(x, canonical));
+    if (already) {
+      this.query = '';
+      return;
+    }
+
+    await this.fav.addCity(canonical);
+
+    this.query = '';
     await this.refresh();
+  } catch (e) {
+    // Město nenalezeno / API error => nepřidávat
+    alert('Město se nepodařilo najít. Zkus jiný název.');
   }
+}
+
+// -------- helpers (přidej do class) --------
+
+private normalizeCityInput(v: string): string {
+  return (v ?? '')
+    .toString()
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+private toTitleCase(v: string): string {
+  // např. "ostrava" -> "Ostrava", "new york" -> "New York"
+  return this.normalizeCityInput(v)
+    .split(' ')
+    .map((w) => (w ? w[0].toLocaleUpperCase('cs-CZ') + w.slice(1).toLocaleLowerCase('cs-CZ') : ''))
+    .join(' ');
+}
+
+private equalsCity(a: string, b: string): boolean {
+  return (
+    this.normalizeCityInput(a).toLocaleLowerCase('cs-CZ') ===
+    this.normalizeCityInput(b).toLocaleLowerCase('cs-CZ')
+  );
+}
 
   async doRefresh(ev: CustomEvent) {
     await this.refresh();

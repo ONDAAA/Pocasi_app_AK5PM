@@ -12,7 +12,7 @@
 
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.06);
   padding-top: 15px;
 }
 
@@ -151,7 +151,7 @@ ion-item.sliding-item .city-card {
 }
 
 .city {
-  font-size: 26px;
+  font-size: 40px;
   font-weight: 700;
   color: #fff;
   letter-spacing: 0.2px;

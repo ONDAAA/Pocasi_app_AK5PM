@@ -15,6 +15,9 @@ import {
   settingsOutline,
   cloudOutline,
   trashOutline,
+  sunnyOutline,
+  waterOutline,
+  speedometerOutline
 } from 'ionicons/icons';
 
 import { routes } from './app/app.routes';
@@ -26,6 +29,9 @@ addIcons({
   'settings-outline': settingsOutline,
   'cloud-outline': cloudOutline,
   'trash-outline': trashOutline,
+  'sunny-outline': sunnyOutline,
+  'water-outline': waterOutline,
+  'speedometer-outline': speedometerOutline
 });
 
 
