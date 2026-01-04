@@ -97,4 +97,9 @@ export class SettingsService {
   async reset() {
     await this.persist(DEFAULTS);
   }
+
+async getSettings(): Promise<AppSettings> {
+  return this.snapshot;
+}
+
 }

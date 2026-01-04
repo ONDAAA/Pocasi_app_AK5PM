@@ -1,0 +1,238 @@
+:host {
+  display: block;
+  width: 100%;
+  --card-radius: 22px;
+}
+
+/* HEADER (sticky search) */
+.search-toolbar {
+  --background: rgba(10, 12, 20, 0.55);
+  --padding-start: 14px;
+  --padding-end: 14px;
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 15px;
+}
+
+.searchbar {
+  margin: 0;
+
+  --background: rgba(255, 255, 255, 0.08);
+  --color: #fff;
+  --placeholder-color: rgba(255, 255, 255, 0.65);
+  --icon-color: rgba(255, 255, 255, 0.75);
+  --clear-button-color: rgba(255, 255, 255, 0.75);
+  --border-radius: 16px;
+}
+
+.add-btn ion-button {
+  --border-radius: 14px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+}
+
+/* CONTENT background + full width */
+ion-content.tab2-content {
+  --background: radial-gradient(circle at 20% 10%, #18224a 0%, #0a0d18 55%, #070812 100%);
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.cards {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 18px 14px 24px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ====== SLIDING WRAPPER FIXES ====== */
+/* ZRUŠ margin na ion-item-sliding – spacing řeší .cards gap */
+ion-item-sliding.sliding-wrap {
+  background: transparent;
+  margin: 0; /* <- tohle je zásadní fix */
+}
+
+/* ion-item uvnitř sliding nesmí přidávat vlastní layout */
+ion-item.sliding-item {
+  --background: transparent;
+  --inner-padding-end: 0px;
+  --padding-start: 0px;
+  --min-height: 0px;
+  --border-color: transparent;
+  --highlight-color-focused: transparent;
+  --highlight-color-valid: transparent;
+  --highlight-color-invalid: transparent;
+  --ripple-color: transparent;
+
+  background: transparent;
+}
+
+/* úplně zruš defaultní ::part(native) padding a čáry */
+ion-item.sliding-item::part(native) {
+  background: transparent;
+  padding: 0 !important;
+  min-height: 0 !important;
+  border: none !important;
+}
+
+ion-item-options {
+  border: none;
+}
+
+ion-item-option {
+  min-width: 64px;
+}
+
+/* ====== CARD DESIGN (beze změn, jen full width) ====== */
+.city-card {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  padding: 14px 16px 12px;
+
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  transform: translateZ(0);
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.city-card:active {
+  transform: scale(0.985);
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* background layer */
+.city-card .bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(120, 140, 255, 0.35), transparent 55%),
+    radial-gradient(circle at 70% 80%, rgba(160, 120, 255, 0.22), transparent 55%),
+    radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.10), transparent 55%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.top .left {
+  min-width: 0;
+}
+
+.city {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  margin-top: 2px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.68);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  opacity: 0.6;
+}
+
+.temp {
+  font-size: 54px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1;
+}
+
+.bottom {
+  margin-top: 10px;
+  align-items: flex-end;
+}
+
+.cond {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.warn {
+  color: rgba(255, 210, 120, 0.95);
+  font-size: 18px;
+}
+
+.hilow {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.78);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sep {
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.actions {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  display: flex;
+  gap: 2px;
+  z-index: 2;
+  opacity: 0.9;
+}
+
+.actions ion-button {
+  --padding-start: 6px;
+  --padding-end: 6px;
+}
+
+/* EMPTY */
+.empty {
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+}
+
+.empty-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.empty-sub {
+  margin-top: 6px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}

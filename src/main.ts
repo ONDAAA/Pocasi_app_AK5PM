@@ -8,9 +8,25 @@ import { environment } from './environments/environment';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 
 
+import { addIcons } from 'ionicons';
+import {
+  partlySunnyOutline,
+  searchOutline,
+  settingsOutline,
+  cloudOutline,
+} from 'ionicons/icons';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
+
+addIcons({
+  'partly-sunny-outline': partlySunnyOutline,
+  'search-outline': searchOutline,
+  'settings-outline': settingsOutline,
+  'cloud-outline': cloudOutline,
+});
+
+
 
 bootstrapApplication(AppComponent, {
   providers: [

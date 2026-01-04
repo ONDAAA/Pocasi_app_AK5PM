@@ -16,4 +16,11 @@ export class WeatherService {
       `${this.baseUrl}/current.json?key=${this.apiKey}&q=${city}&lang=cs`
     );
   }
+
+  searchCities(query: string) {
+    const q = encodeURIComponent(query.trim());
+    return this.http.get<any[]>(
+      `${this.baseUrl}/search.json?key=${this.apiKey}&q=${q}&lang=cs`
+    );
+  }
 }
