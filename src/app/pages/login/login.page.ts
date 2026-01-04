@@ -2,14 +2,14 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AppModeService } from '../../services/app-mode.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
+  imports: [IonicModule, CommonModule, FormsModule, RouterModule],
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
