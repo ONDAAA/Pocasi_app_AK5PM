@@ -152,7 +152,8 @@
         <div class="forecast-row">
             <div class="forecast-card" *ngFor="let d of forecastDays">
             <div class="f-top">
-                <div class="f-day">{{ d.dayName }} {{ formatForecastDay(d.date) }}</div>
+                <div class="f-day">{{ formatForecastDay(d.date) }}</div>
+
 
                 
                 <img *ngIf="d.iconUrl" class="f-img" [src]="d.iconUrl" alt="" />
