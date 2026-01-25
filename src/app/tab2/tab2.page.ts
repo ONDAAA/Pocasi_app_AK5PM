@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
@@ -50,7 +49,7 @@ type CitySuggest = {
 @Component({
   selector: 'app-tab2',
   standalone: true,
-  imports: [IonicModule, CommonModule, IonHeader, IonToolbar, IonButtons, IonButton, IonSearchbar, IonList, IonItem, IonLabel, IonSpinner, IonContent, IonRefresher, IonRefresherContent, IonItemSliding, IonItemOptions, IonItemOption, IonIcon],
+  imports: [ CommonModule, IonHeader, IonToolbar, IonButtons, IonButton, IonSearchbar, IonList, IonItem, IonLabel, IonSpinner, IonContent, IonRefresher, IonRefresherContent, IonItemSliding, IonItemOptions, IonItemOption, IonIcon],
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
 })

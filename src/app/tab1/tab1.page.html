@@ -130,20 +130,11 @@
         <div class="m-value">{{ displayTempCtoUnit(weather.current?.dewpoint_c) }}°</div>
       </button>
 
-      <button class="metric-card tap" type="button" (click)="metricTap('Wind dir')">
-        <div class="m-label">Směr větru</div>
-        <div class="m-value">{{ weather.current?.wind_dir }}</div>
-      </button>
-
       <button class="metric-card tap" type="button" (click)="metricTap('Pressure')">
         <div class="m-label">Tlak</div>
         <div class="m-value">{{ weather.current?.pressure_mb }} hPa</div>
       </button>
-
-      <button class="metric-card tap" type="button" (click)="metricTap('Last update')">
-        <div class="m-label">Aktualizace</div>
-        <div class="m-value">{{ weather.current?.last_updated }}</div>
-      </button>
+      
     </div>
     <!-- FORECAST -->
     <div class="forecast" *ngIf="!loading && forecastDays.length">

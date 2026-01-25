@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { Subscription, firstValueFrom } from 'rxjs';
 
@@ -22,7 +21,7 @@ import {
 @Component({
   selector: 'app-tab1',
   standalone: true,
-  imports: [IonicModule, CommonModule, IonContent, IonRefresher, IonRefresherContent, IonIcon, IonSkeletonText, IonCard, IonCardContent, IonChip, IonLabel],
+  imports: [CommonModule, IonContent, IonRefresher, IonRefresherContent, IonIcon, IonSkeletonText, IonCard, IonCardContent, IonChip, IonLabel],
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
 })

@@ -8,14 +8,17 @@
 }
 
 .wrap {
-
-  min-height: calc(100vh - 56px - env(safe-area-inset-bottom)); 
+  min-height: 100vh;            // ← celé viewport
+  display: flex;                // ← DŮLEŽITÉ
   flex-direction: column;
-  justify-content: center; 
+  justify-content: center;      // ← vertikálně na střed
+  align-items: stretch;         // ← karty zůstanou na šířku
+
   padding: 18px 14px 24px;
-  max-width: 520px;       
-  margin: 0 auto;           
+  max-width: 520px;
+  margin: 0 auto;
 }
+
 
 
 .topbar {

@@ -12,16 +12,12 @@ import { AppModeService } from '../../services/app-mode.service';
   styleUrls: ['./start.page.scss'],
 })
 export class StartPage implements OnInit {
-  constructor(private appMode: AppModeService, private router: Router) {}
+  constructor(
+    private appMode: AppModeService,
+    private router: Router
+  ) {}
 
   async ngOnInit() {
-    const url = this.router.url;
-
-    // povol veřejné stránky bez přesměrování
-    if (url.startsWith('/login') || url.startsWith('/register') || url.startsWith('/auth-gate')) {
-      return;
-    }
-
     const mode = await this.appMode.getMode();
 
     if (mode === 'guest' || mode === 'user') {
@@ -30,6 +26,5 @@ export class StartPage implements OnInit {
     }
 
     await this.router.navigateByUrl('/auth-gate', { replaceUrl: true });
- }
-
+  }
 }
