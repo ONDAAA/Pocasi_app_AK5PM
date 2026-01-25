@@ -124,7 +124,8 @@ export class Tab1Page implements OnInit, OnDestroy {
         const dayName = dayNames[dt.getDay()] ?? '';
 
         const icon = d?.day?.condition?.icon ? `https:${d.day.condition.icon}` : '';
-        const text = d?.day?.condition?.text ?? '—';
+        const text = translateConditionToCz(d?.day?.condition?.text) || '—';
+
 
         const maxC = Number(d?.day?.maxtemp_c);
         const minC = Number(d?.day?.mintemp_c);
@@ -177,3 +178,45 @@ export class Tab1Page implements OnInit, OnDestroy {
     ev.target?.complete?.();
   }
 }
+
+const CONDITION_CZ: Record<string, string> = {
+  'Sunny': 'Slunečno',
+  'Clear': 'Jasno',
+  'Partly cloudy': 'Polojasno',
+  'Cloudy': 'Zataženo',
+  'Overcast': 'Zataženo',
+  'Mist': 'Opar',
+  'Fog': 'Mlha',
+  'Freezing fog': 'Mrznoucí mlha',
+
+  'Patchy rain possible': 'Místy déšť',
+  'Patchy light rain': 'Místy slabý déšť',
+  'Light rain': 'Slabý déšť',
+  'Moderate rain': 'Déšť',
+  'Heavy rain': 'Silný déšť',
+  'Light rain shower': 'Přeháňky',
+  'Moderate or heavy rain shower': 'Silné přeháňky',
+
+  'Patchy snow possible': 'Místy sníh',
+  'Patchy light snow': 'Místy slabé sněžení',
+  'Light snow': 'Slabé sněžení',
+  'Moderate snow': 'Sněžení',
+  'Heavy snow': 'Silné sněžení',
+  'Blizzard': 'Vánice',
+
+  'Thundery outbreaks possible': 'Možné bouřky',
+  'Patchy light rain with thunder': 'Bouřky s deštěm',
+  'Moderate or heavy rain with thunder': 'Silné bouřky s deštěm',
+
+  'Sleet': 'Déšť se sněhem',
+  'Light sleet': 'Slabý déšť se sněhem',
+  'Moderate or heavy sleet': 'Déšť se sněhem',
+  'Ice pellets': 'Ledové krupky',
+  'Hail': 'Kroupy',
+};
+
+function translateConditionToCz(text?: string | null): string {
+  const t = (text ?? '').trim();
+  return CONDITION_CZ[t] ?? t;
+}
+
