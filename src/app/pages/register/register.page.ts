@@ -5,11 +5,36 @@ import { IonicModule } from '@ionic/angular';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AppModeService } from '../../services/app-mode.service';
+import {
+  IonContent,
+  IonIcon,
+  IonCard,
+  IonCardContent,
+  IonItem,
+  IonInput,
+  IonButton,
+  IonSpinner,
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RouterModule],
+  imports: [
+    IonicModule,
+    CommonModule,
+    FormsModule,
+    RouterModule,
+
+    // Ionic standalone components used in template:
+    IonContent,
+    IonIcon,
+    IonCard,
+    IonCardContent,
+    IonItem,
+    IonInput,
+    IonButton,
+    IonSpinner,
+  ],
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
 })

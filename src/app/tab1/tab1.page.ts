@@ -7,11 +7,22 @@ import { FavoritesService } from '../services/favorites.service';
 import { WeatherService } from '../services/weather.service';
 import { SettingsService, TempUnit } from '../services/settings.service';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import {
+  IonContent,
+  IonRefresher,
+  IonRefresherContent,
+  IonIcon,
+  IonSkeletonText,
+  IonCard,
+  IonCardContent,
+  IonChip,
+  IonLabel,
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-tab1',
   standalone: true,
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, IonContent, IonRefresher, IonRefresherContent, IonIcon, IonSkeletonText, IonCard, IonCardContent, IonChip, IonLabel],
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
 })

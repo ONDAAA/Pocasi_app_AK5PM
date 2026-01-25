@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">pocasi</string>
+    <string name="title_activity_main">pocasi</string>
+    <string name="package_name">cz.utb.pocasiapp</string>
+    <string name="custom_url_scheme">cz.utb.pocasiapp</string>
+</resources>

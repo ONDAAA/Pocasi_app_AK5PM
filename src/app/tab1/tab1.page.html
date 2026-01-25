@@ -108,49 +108,41 @@
       <button class="metric-card tap" type="button" (click)="metricTap('Clouds')">
         <div class="m-label">Oblačnost</div>
         <div class="m-value">{{ weather.current?.cloud }} %</div>
-        <div class="m-sub">cloud</div>
       </button>
 
       <button class="metric-card tap" type="button" (click)="metricTap('Visibility')">
         <div class="m-label">Viditelnost</div>
         <div class="m-value">{{ weather.current?.vis_km }} km</div>
-        <div class="m-sub">vis_km</div>
       </button>
 
       <button class="metric-card tap" type="button" (click)="metricTap('Gust')">
         <div class="m-label">Nárazy větru</div>
         <div class="m-value">{{ weather.current?.gust_kph }} km/h</div>
-        <div class="m-sub">gust_kph</div>
       </button>
 
       <button class="metric-card tap" type="button" (click)="metricTap('Precip')">
         <div class="m-label">Srážky</div>
         <div class="m-value">{{ weather.current?.precip_mm }} mm</div>
-        <div class="m-sub">precip_mm</div>
       </button>
 
       <button class="metric-card tap" type="button" (click)="metricTap('Dew point')">
         <div class="m-label">Rosný bod</div>
         <div class="m-value">{{ displayTempCtoUnit(weather.current?.dewpoint_c) }}°</div>
-        <div class="m-sub">dewpoint</div>
       </button>
 
       <button class="metric-card tap" type="button" (click)="metricTap('Wind dir')">
         <div class="m-label">Směr větru</div>
         <div class="m-value">{{ weather.current?.wind_dir }}</div>
-        <div class="m-sub">wind_dir</div>
       </button>
 
       <button class="metric-card tap" type="button" (click)="metricTap('Pressure')">
         <div class="m-label">Tlak</div>
         <div class="m-value">{{ weather.current?.pressure_mb }} hPa</div>
-        <div class="m-sub">pressure</div>
       </button>
 
       <button class="metric-card tap" type="button" (click)="metricTap('Last update')">
         <div class="m-label">Aktualizace</div>
         <div class="m-value">{{ weather.current?.last_updated }}</div>
-        <div class="m-sub">last_updated</div>
       </button>
     </div>
     <!-- FORECAST -->
@@ -160,7 +152,7 @@
         <div class="forecast-row">
             <div class="forecast-card" *ngFor="let d of forecastDays">
             <div class="f-top">
-                <div class="f-day">{{ d.dayName }} {{ formatForecastDay(d.date) }}</div>
+                <div class="f-day">{{ formatForecastDay(d.date) }}</div>
 
                 
                 <img *ngIf="d.iconUrl" class="f-img" [src]="d.iconUrl" alt="" />

@@ -1,15 +1,40 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
 import { Router, RouterModule } from '@angular/router';
+
+import {
+  IonContent,
+  IonIcon,
+  IonCard,
+  IonCardContent,
+  IonItem,
+  IonInput,
+  IonButton,
+  IonSpinner,
+} from '@ionic/angular/standalone';
+
 import { AuthService } from '../../services/auth.service';
 import { AppModeService } from '../../services/app-mode.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+
+    // Ionic standalone components used in template:
+    IonContent,
+    IonIcon,
+    IonCard,
+    IonCardContent,
+    IonItem,
+    IonInput,
+    IonButton,
+    IonSpinner,
+  ],
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
@@ -51,7 +76,6 @@ export class LoginPage {
       case 'auth/network-request-failed':
         return 'Chyba sítě. Zkontroluj připojení k internetu.';
       default:
-        // Firebase někdy vrací jen message bez code, tak fallback:
         return e?.message ? String(e.message) : 'Chyba přihlášení.';
     }
   }
@@ -62,7 +86,6 @@ export class LoginPage {
     const email = this.email.trim();
     const pass = this.password;
 
-    // rychlá validace (ať netrefuješ Firebase zbytečně)
     if (!email) {
       this.error = 'Zadej email.';
       return;

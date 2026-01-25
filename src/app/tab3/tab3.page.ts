@@ -3,6 +3,16 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import {
+  IonContent,
+  IonSpinner,
+  IonButton,
+  IonSegment,
+  IonSegmentButton,
+  IonLabel,
+  IonItem,
+  IonToggle,
+} from '@ionic/angular/standalone';
 
 import { FavoritesService } from '../services/favorites.service';
 import { AuthService } from '../services/auth.service';
@@ -11,7 +21,7 @@ import { SettingsService, AppSettings, TempUnit } from '../services/settings.ser
 @Component({
   selector: 'app-tab3',
   standalone: true,
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, IonContent, IonSpinner, IonButton, IonSegment, IonSegmentButton, IonLabel, IonItem, IonToggle],
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss'],
 })

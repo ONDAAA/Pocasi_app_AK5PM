@@ -7,8 +7,25 @@ import { firstValueFrom } from 'rxjs';
 import { FavoritesService } from '../services/favorites.service';
 import { WeatherService } from '../services/weather.service';
 import { SettingsService } from '../services/settings.service';
-import { IonItemSliding } from '@ionic/angular';
 
+import {
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonButton,
+  IonSearchbar,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonSpinner,
+  IonContent,
+  IonRefresher,
+  IonRefresherContent,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
+  IonIcon,
+} from '@ionic/angular/standalone';
 
 
 type TempUnit = 'c' | 'f';
@@ -33,7 +50,7 @@ type CitySuggest = {
 @Component({
   selector: 'app-tab2',
   standalone: true,
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, IonHeader, IonToolbar, IonButtons, IonButton, IonSearchbar, IonList, IonItem, IonLabel, IonSpinner, IonContent, IonRefresher, IonRefresherContent, IonItemSliding, IonItemOptions, IonItemOption, IonIcon],
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
 })
