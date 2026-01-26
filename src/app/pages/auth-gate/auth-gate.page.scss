@@ -8,11 +8,11 @@
 }
 
 .wrap {
-  min-height: 100vh;            // ← celé viewport
-  display: flex;                // ← DŮLEŽITÉ
+  min-height: 100vh;            
+  display: flex;                
   flex-direction: column;
-  justify-content: center;      // ← vertikálně na střed
-  align-items: stretch;         // ← karty zůstanou na šířku
+  justify-content: center;     
+  align-items: stretch;        
 
   padding: 18px 14px 24px;
   max-width: 520px;
@@ -73,7 +73,7 @@
   color: rgba(255, 255, 255, 0.68);
 }
 
-/* GLASS CARD */
+
 .glass-card {
   position: relative;
   overflow: hidden;

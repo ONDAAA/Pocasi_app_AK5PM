@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  // 🔑 Start page rozhoduje, kam jít (auth-gate / tabs)
   {
     path: '',
     pathMatch: 'full',
@@ -33,14 +32,5 @@ export const routes: Routes = [
       import('./tabs/tabs.routes').then((m) => m.routes),
   },
 
-  
-
-  {
-    path: 'settings',
-    loadComponent: () =>
-      import('./pages/settings/settings.page').then((m) => m.SettingsPage),
-  },
-
-  // 🔁 fallback → start (ne auth-gate!)
   { path: '**', redirectTo: '' },
 ];

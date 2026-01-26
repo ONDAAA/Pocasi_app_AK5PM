@@ -38,22 +38,27 @@ import { AppModeService } from '../../services/app-mode.service';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
+
+// Přihlašovací stránka
 export class LoginPage {
   email = '';
   password = '';
   loading = false;
   error = '';
 
+  // Konstruktor s injektovanými službami
   constructor(
     private auth: AuthService,
     private appMode: AppModeService,
     private router: Router
   ) {}
 
+  // Validace formátu emailu
   private isValidEmail(v: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
   }
 
+  // Převod chybového kódu na uživatelsky přívětivou zprávu
   private niceAuthError(e: any): string {
     const code: string | undefined = e?.code;
 
@@ -80,6 +85,7 @@ export class LoginPage {
     }
   }
 
+  // Provést přihlášení
   async doLogin() {
     this.error = '';
 
@@ -99,6 +105,7 @@ export class LoginPage {
       return;
     }
 
+  
     this.loading = true;
     try {
       await this.auth.login(email, pass);
@@ -111,6 +118,7 @@ export class LoginPage {
     }
   }
 
+  // Odeslat požadavek na obnovení zapomenutého hesla
   async forgotPassword() {
     this.error = '';
 

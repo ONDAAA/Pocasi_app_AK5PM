@@ -36,6 +36,8 @@ import {
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
 })
+
+// Registrační stránka
 export class RegisterPage {
   email = '';
   password = '';
@@ -43,18 +45,20 @@ export class RegisterPage {
   loading = false;
   error = '';
 
+  // Konstruktor s injektovanými službami
   constructor(
     private auth: AuthService,
     private appMode: AppModeService,
     private router: Router
   ) {}
 
+  // Provést registraci
   async doRegister() {
     this.error = '';
 
     const email = this.email.trim();
 
-    // ===== VALIDACE =====
+    // validace
     if (!email) {
       this.error = 'Zadej email.';
       return;
@@ -75,7 +79,7 @@ export class RegisterPage {
       return;
     }
 
-    // ===== REGISTER =====
+    // registrace
     this.loading = true;
     try {
       await this.auth.register(email, this.password);
@@ -88,12 +92,13 @@ export class RegisterPage {
     }
   }
 
-  // ===== HELPERS =====
+  // Validace formátu emailu
 
   private isValidEmail(email: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
+  // Převod chybového kódu z Firebase na uživatelsky přívětivou zprávu
   private mapFirebaseError(e: any): string {
     const code = e?.code ?? '';
 

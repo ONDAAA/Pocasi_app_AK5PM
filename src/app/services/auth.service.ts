@@ -9,28 +9,32 @@ import {
 } from '@angular/fire/auth';
 
 @Injectable({ providedIn: 'root' })
+// Služba pro autentizaci uživatelů pomocí Firebase Auth
 export class AuthService {
-  constructor(private auth: Auth) {}
-  readonly user$ = authState(this.auth);
+  constructor(private auth: Auth) {} 
+  readonly user$ = authState(this.auth); // Observable aktuálního uživatele
 
-  // ---------- PUBLIC API ----------
+  // přihlásit
   async login(email: string, password: string) {
     return signInWithEmailAndPassword(this.auth, email, password);
   }
 
+  // registrovat
   async register(email: string, password: string) {
     return createUserWithEmailAndPassword(this.auth, email, password);
   }
 
+  // reset hesla
   async resetPassword(email: string) {
     return sendPasswordResetEmail(this.auth, email);
   }
 
+  // logout
   async logout() {
     return signOut(this.auth);
   }
 
-  // ---------- ERROR MAPPING ----------
+  // vrátit chybu v normální podobě pro uživatele
   getNiceError(err: any): string {
     const code: string | undefined = err?.code;
 
@@ -55,7 +59,7 @@ export class AuthService {
       case 'auth/network-request-failed':
         return 'Chyba sítě. Zkontroluj připojení k internetu.';
 
-      // register-specific
+      // register specific
       case 'auth/email-already-in-use':
         return 'Tento email už je zaregistrovaný.';
       case 'auth/operation-not-allowed':

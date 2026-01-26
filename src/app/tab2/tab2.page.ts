@@ -26,7 +26,7 @@ import {
   IonIcon,
 } from '@ionic/angular/standalone';
 
-
+// Typ jednotky teploty 
 type TempUnit = 'c' | 'f';
 
 type CityRow = {
@@ -40,6 +40,7 @@ type CityRow = {
   warning?: boolean;
 };
 
+// Typ pro našeptávač měst
 type CitySuggest = {
   name: string;
   region?: string;
@@ -53,6 +54,7 @@ type CitySuggest = {
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
 })
+// Stránka pro správu oblíbených měst a přidávání nových
 export class Tab2Page {
   query = '';
   items: CityRow[] = [];
@@ -62,9 +64,11 @@ export class Tab2Page {
   suggestions: CitySuggest[] = [];
   searching = false;
 
+
   private activeCity = '';
   private debounceTimer?: ReturnType<typeof setTimeout>;
 
+    
   constructor(
     private router: Router,
     private fav: FavoritesService,
@@ -72,13 +76,12 @@ export class Tab2Page {
     private settings: SettingsService
   ) {}
 
+  // Při vstupu na stránku načíst nastavení a seznam měst
   async ionViewWillEnter() {
-    // SettingsService u tebe nemá getSettings(), má snapshot/state$
-    // => použij snapshot (už je to initnuté uvnitř service)
     const s = this.settings.snapshot;
     this.unit = s.tempUnit ?? 'c';
 
-    // active city (pokud existuje)
+    // načíst seznam měst a aktivní město
     if (typeof (this.fav as any).getActiveCity === 'function') {
       this.activeCity = await (this.fav as any).getActiveCity();
     }
@@ -86,11 +89,9 @@ export class Tab2Page {
     await this.refresh();
   }
 
-  // ---------- UI handlers ----------
   onSearchChange(ev: any) {
     this.query = (ev?.detail?.value ?? '').toString();
 
-    // našeptávač (debounce)
     this.scheduleSuggestions();
   }
 
@@ -101,26 +102,27 @@ export class Tab2Page {
     if (this.debounceTimer) clearTimeout(this.debounceTimer);
   }
 
-  // pokud máš v HTML klik na suggestion, zavolej tohle
+  // Vybrat návrh z našeptávače
   pickSuggestion(name: string) {
     this.query = name;
     this.suggestions = [];
     this.searching = false;
   }
 
+  // Přidat město z inputu
   async addCityFromQuery() {
   const input = this.normalizeCityInput(this.query);
   if (!input) return;
 
-  // 1) Ověř existenci města přes API (když nenajde -> error)
+  // 1) Ověřit, že město existuje pomocí WeatherService
   try {
     const data: any = await firstValueFrom(this.weather.getCurrentWeather(input));
 
-    // 2) Vezmi kanonický název z API (lepší než ruční title case)
+    // 2) Získat kanonický název města z odpovědi API
     const canonical =
       this.normalizeCityInput(data?.location?.name) || this.toTitleCase(input);
 
-    // 3) Nepřidávat duplicity (case-insensitive)
+    // 3) Zkontrolovat, zda město již není v seznamu a pokud ne, přidat ho
     const existing = await this.safeListCities();
     const already = existing.some((x) => this.equalsCity(x, canonical));
     if (already) {
@@ -133,13 +135,13 @@ export class Tab2Page {
     this.query = '';
     await this.refresh();
   } catch (e) {
-    // Město nenalezeno / API error => nepřidávat
+    // chyba při načítání počasí - město neexistuje nebo jiný problém
     alert('Město se nepodařilo najít. Zkus jiný název.');
   }
 }
 
-// -------- helpers (přidej do class) --------
 
+// Normalizovat vstup města pro porovnávání
 private normalizeCityInput(v: string): string {
   return (v ?? '')
     .toString()
@@ -147,6 +149,7 @@ private normalizeCityInput(v: string): string {
     .replace(/\s+/g, ' ');
 }
 
+// Převést název města na formát s velkým počátečním písmenem každého slova
 private toTitleCase(v: string): string {
   // např. "ostrava" -> "Ostrava", "new york" -> "New York"
   return this.normalizeCityInput(v)
@@ -155,6 +158,7 @@ private toTitleCase(v: string): string {
     .join(' ');
 }
 
+// Porovnat dva názvy měst bez ohledu na velikost písmen a mezery
 private equalsCity(a: string, b: string): boolean {
   return (
     this.normalizeCityInput(a).toLocaleLowerCase('cs-CZ') ===
@@ -164,14 +168,13 @@ private equalsCity(a: string, b: string): boolean {
 
   async doRefresh(ev: CustomEvent) {
     await this.refresh();
-    // @ts-ignore
     ev?.detail?.complete?.();
   }
 
   async refresh() {
     const cities = await this.safeListCities();
 
-    // pokud activeCity prázdné a máme města, nastav default
+    // pokud není aktivní město, nastav ho na první v seznamu
     if (!this.activeCity && cities.length) {
       this.activeCity = cities[0];
       if (typeof (this.fav as any).setActiveCity === 'function') {
@@ -181,15 +184,18 @@ private equalsCity(a: string, b: string): boolean {
 
     const rows: CityRow[] = [];
 
+    // načíst počasí pro každé město
     for (const city of cities) {
       try {
         const data: any = await firstValueFrom(this.weather.getCurrentWeather(city));
 
+        // extrahovat potřebná data: local time, condition, temp, feels like
         const localTime = this.extractLocalTime(data);
         const condition = data?.current?.condition?.text ?? '—';
         const tempC = Number(data?.current?.temp_c ?? NaN);
         const feelsC = Number(data?.current?.feelslike_c ?? NaN);
 
+        // převod teplot na zvolenou jednotku
         const temp = this.toUnit(tempC);
         const high = this.toUnit(isFinite(feelsC) ? feelsC : tempC + 1); // fallback
         const low = this.toUnit(isFinite(tempC) ? tempC - 2 : tempC);    // fallback
@@ -218,7 +224,7 @@ private equalsCity(a: string, b: string): boolean {
       }
     }
 
-    // active city dej nahoru
+  // seřadit řádky - aktivní město nahoře
     rows.sort((a, b) =>
       a.name === this.activeCity ? -1 : b.name === this.activeCity ? 1 : 0
     );
@@ -226,6 +232,7 @@ private equalsCity(a: string, b: string): boolean {
     this.items = rows;
   }
 
+  // Otevřít detail města na kartě Tab1
   openCity(c: CityRow) {
     this.setActive(c.name).then(() => {
       this.router.navigateByUrl('/tabs/tab1');
@@ -234,6 +241,7 @@ private equalsCity(a: string, b: string): boolean {
 
   trackByCity = (_: number, c: CityRow) => c.name;
 
+  // Nastavit aktivní město
   async setActive(name: string) {
     this.activeCity = name;
 
@@ -244,10 +252,11 @@ private equalsCity(a: string, b: string): boolean {
     await this.refresh();
   }
 
+  // Odebrat město ze seznamu
   async remove(name: string) {
     await this.fav.removeCity(name);
 
-    // když smažeš active, přepni active na první zbylé
+    // Pokud bylo odebrané město aktivní, nastavit první dostupné město jako aktivní
     if (name === this.activeCity) {
       const cities = await this.safeListCities();
       this.activeCity = cities[0] ?? '';
@@ -259,7 +268,7 @@ private equalsCity(a: string, b: string): boolean {
     await this.refresh();
   }
 
-  // ---------- AUTOCOMPLETE (WeatherAPI search.json) ----------
+  // Naplánovat načtení našeptávače s debounce
   private scheduleSuggestions() {
     if (this.debounceTimer) clearTimeout(this.debounceTimer);
 
@@ -277,6 +286,7 @@ private equalsCity(a: string, b: string): boolean {
     }, 300);
   }
 
+  // Načíst návrhy měst z WeatherService
   private fetchSuggestions(q: string) {
     this.weather.searchCities(q).subscribe({
       next: (res: any[]) => {
@@ -295,7 +305,7 @@ private equalsCity(a: string, b: string): boolean {
     });
   }
 
-  // ---------- helpers ----------
+  // Bezpečně získat seznam měst z FavoritesService
   private async safeListCities(): Promise<string[]> {
     if (typeof (this.fav as any).listCities === 'function') {
       return await (this.fav as any).listCities();
@@ -306,6 +316,7 @@ private equalsCity(a: string, b: string): boolean {
     return [];
   }
 
+  // Extrahovat místní čas z dat počasí
   private extractLocalTime(data: any): string {
     const raw = data?.location?.localtime;
     if (!raw || typeof raw !== 'string') return '—';
@@ -313,6 +324,7 @@ private equalsCity(a: string, b: string): boolean {
     return parts[1] ?? raw;
   }
 
+  // Převést teplotu na zvolenou jednotku
   private toUnit(tempC: number): number {
     if (!isFinite(tempC)) return 0;
     if (this.unit === 'c') return Math.round(tempC);

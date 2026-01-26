@@ -24,18 +24,19 @@ import { SettingsService, AppSettings, TempUnit } from '../services/settings.ser
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss'],
 })
+
+// Stránka nastavení a správy účtu
 export class Tab3Page implements OnInit, OnDestroy {
   loading = true;
 
-  // auth state
+  // Auth state
   isLoggedIn = false;
   userEmail = '';
 
-  // settings (bez ? v html)
+  // Settings state
   settings: AppSettings = {
     tempUnit: 'c',
-    autoRefresh: true,
-    useSystemTheme: true,
+
   };
 
   private subAuth?: Subscription;
@@ -48,13 +49,13 @@ export class Tab3Page implements OnInit, OnDestroy {
     private settingsSvc: SettingsService
   ) {}
 
+  // Inicializace komponenty - načtení stavu autentizace a nastavení
   async ngOnInit() {
-    // Settings state (globální + persistentní)
     this.subSettings = this.settingsSvc.state$.subscribe((s) => {
       this.settings = s;
     });
 
-    // Auth state
+    // Sledování stavu přihlášení uživatele
     this.subAuth = this.auth.user$?.subscribe((u: any) => {
       this.isLoggedIn = !!u;
       this.userEmail = u?.email ?? '';
@@ -63,34 +64,32 @@ export class Tab3Page implements OnInit, OnDestroy {
     this.loading = false;
   }
 
+  
   ngOnDestroy() {
     this.subAuth?.unsubscribe();
     this.subSettings?.unsubscribe();
   }
 
-  // ---------- navigation ----------
+  // navigace na login stránku
   goLogin() {
     this.router.navigateByUrl('/login');
   }
 
+  // navigace na registrační stránku
   goRegister() {
     this.router.navigateByUrl('/register');
   }
 
-  // ---------- settings ----------
+  //nastavení jednotky teploty
   async setTempUnit(unit: TempUnit) {
     await this.settingsSvc.setTempUnit(unit);
   }
 
-  async toggleAutoRefresh(checked: boolean) {
-    await this.settingsSvc.setAutoRefresh(!!checked);
-  }
+  
 
-  async toggleUseSystemTheme(checked: boolean) {
-    await this.settingsSvc.setUseSystemTheme(!!checked);
-  }
+  
 
-  // ---------- account ----------
+  // údálost odhlášení
   async logout() {
     try {
       await this.auth.logout();
@@ -100,16 +99,16 @@ export class Tab3Page implements OnInit, OnDestroy {
     }
   }
 
-  // ---------- data management ----------
+  // Reset lokálních dat (nastavení a oblíbená města)
   async resetLocalData() {
     const ok = confirm('Opravdu resetovat lokální data (města, nastavení)?');
     if (!ok) return;
 
     try {
-      // reset settings (tím se uloží i do local)
+      // reset nastavení
       await this.settingsSvc.reset();
 
-      // smazat lokální favorites (guest data)
+      // smazat oblíbená města
       await this.favorites.clearLocal();
 
       alert('Hotovo. Lokální data resetována.');
