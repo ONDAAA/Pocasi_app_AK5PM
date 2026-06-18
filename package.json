@@ -1,8 +1,9 @@
 {
-  "name": "ionic-app-base",
+  "name": "pocasi-app-ak5pm",
   "version": "0.0.0",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "Ondrej Zemanek",
+  "description": "School weather app built with Ionic, Angular, Capacitor, Firebase Auth, Firestore, and WeatherAPI.",
+  "homepage": "https://github.com/ONDAAA/Pocasi_app_AK5PM",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

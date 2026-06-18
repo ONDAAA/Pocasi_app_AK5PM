@@ -1,5 +1,9 @@
 export const environment = {
   production: true,
+  weatherApi: {
+    baseUrl: 'https://api.weatherapi.com/v1',
+    apiKey: '6b7a6a7ddd504cd59ee05555260301',
+  },
   firebase: {
     apiKey: "AIzaSyDJMN-NhHWlFJZGw-OL0VwwF3XwBASNM8s",
     authDomain: "pocasiappak5pm.firebaseapp.com",

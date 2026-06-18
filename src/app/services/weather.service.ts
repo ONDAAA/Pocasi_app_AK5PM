@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WeatherService {
-  private apiKey = '6b7a6a7ddd504cd59ee05555260301'; //API klíč pro weatherapi.com
-  private baseUrl = 'https://api.weatherapi.com/v1'; //základní URL pro API
+  private apiKey = environment.weatherApi.apiKey;
+  private baseUrl = environment.weatherApi.baseUrl;
 
   //Volání HTTP klienta REST API
   constructor(private http: HttpClient) {}
