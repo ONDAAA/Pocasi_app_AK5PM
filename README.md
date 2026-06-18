@@ -148,23 +148,6 @@ To je implementováno zejména v:
 - [`src/app/services/cloud.service.ts`](src/app/services/cloud.service.ts)
 - [`src/app/services/settings.service.ts`](src/app/services/settings.service.ts)
 
-## Use Cases
-
-Repozitář může být užitečný například jako:
-
-- ukázka školní mobilní aplikace postavené na Ionic + Angular + Capacitor
-- reference pro propojení WeatherAPI s mobilním UI
-- příklad kombinace guest režimu a přihlášeného režimu
-- ukázka použití Firebase Auth a Firestore v hybridní mobilní aplikaci
-- výchozí základ pro další studentský projekt se záložkami, účty a cloudovou synchronizací
-
-## Omezení projektu
-
-- Weather API klíč i Firebase konfigurace jsou klientské a aplikace je navržená jako školní projekt, ne jako produkční enterprise aplikace.
-- Přístup k WeatherAPI přímo z klienta je jednoduchý pro výuku, ale pro produkční nasazení by byl vhodnější backend nebo proxy vrstva.
-- README neobsahuje screenshoty ani UX walkthrough, protože v repozitáři nejsou přiložené exporty obrazovek.
-- Projekt nebyl v této úpravě architektonicky přepisován; cílem bylo hlavně lepší veřejné zdokumentování a menší cleanup konfigurace.
-
 ## Doporučené vstupní body do kódu
 
 - start aplikace: [`src/main.ts`](src/main.ts)
